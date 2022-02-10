@@ -1,6 +1,6 @@
 # maybe
 
-Application exception flow
+Minimalistic application flow handling
 
 ## Install
 

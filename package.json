@@ -1,6 +1,6 @@
 {
 	"name": "@chkt/maybe",
-	"description": "Application exception flow",
+	"description": "Minimalistic application flow handling",
 	"keywords": [
 		"Failure",
 		"None",
@@ -26,7 +26,7 @@
 		"prepublishOnly": "yarn outdated && yarn run test && yarn run lint && yarn run build",
 		"lint": "yarn eslint source/**/*.ts test/**/*.ts",
 		"test": "./node_modules/mocha/bin/mocha -r ts-node/register test/**/*.ts",
-		"build": "rm -rf ./dist/* && ./node_modules/typescript/bin/tsc"
+		"build": "rm -rf ./dist/* && yarn tsc"
 	},
 	"devDependencies": {
 		"@chkt/eslint-config": "^1.0",

@@ -1,8 +1,5 @@
 {
-	"include" : [
-		"./source/**/*",
-		"./test/**/*"
-	],
+	"include" : [ "./source/**/*", ],
 	"compilerOptions": {
 		"baseUrl": ".",
 		"outDir": "./dist",
