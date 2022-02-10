@@ -1,0 +1,21 @@
+{
+	"include" : [
+		"./source/**/*",
+		"./test/**/*"
+	],
+	"compilerOptions": {
+		"baseUrl": ".",
+		"outDir": "./dist",
+
+		"target": "es2015",
+		"lib" : [],
+		"module": "commonjs",
+		"newLine": "LF",
+
+		"sourceMap": false,
+		"declaration": true,
+
+		"strict": true,
+		"removeComments": true
+	}
+}

@@ -1,0 +1,44 @@
+{
+	"name": "@chkt/maybe",
+	"description": "Application exception flow",
+	"keywords": [
+		"Failure",
+		"None",
+		"Option",
+		"Result",
+		"Some"
+	],
+	"version": "1.0.0-beta.1",
+	"license": "MIT",
+	"author": {
+		"name": "chkt",
+		"email": "ck@chkt.one",
+		"url": "chkt.one"
+	},
+	"repository": {
+		"url": "https://github.com/chkt/maybe"
+	},
+	"files": [
+		"dist"
+	],
+	"main": "dist/index",
+	"scripts": {
+		"prepublishOnly": "yarn outdated && yarn run test && yarn run lint && yarn run build",
+		"lint": "yarn eslint source/**/*.ts test/**/*.ts",
+		"test": "./node_modules/mocha/bin/mocha -r ts-node/register test/**/*.ts",
+		"build": "rm -rf ./dist/* && ./node_modules/typescript/bin/tsc"
+	},
+	"devDependencies": {
+		"@chkt/eslint-config": "^1.0",
+		"@types/mocha": "^9.1",
+		"@types/node": "^17.0",
+		"@typescript-eslint/eslint-plugin": "^5.11",
+		"@typescript-eslint/parser": "^5.11",
+		"eslint": "^8.8",
+		"mocha": "^9.2",
+		"nyc": "^15.1",
+		"ts-node": "^10.5",
+		"typescript": "^4.5"
+	},
+	"dependencies": {}
+}
