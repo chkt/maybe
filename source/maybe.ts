@@ -13,7 +13,7 @@ export function isResult<T>(maybe:Maybe<T>) : maybe is Result<T> {
 	return 'value' in maybe;
 }
 
-export function isFailure<F extends Failure>(maybe:Maybe<unknown, F>) : maybe is F {
+export function isFailure<T, U>(maybe:Maybe<T, Failure<U>>) : maybe is Failure<U> {
 	return 'severity' in maybe;
 }
 
