@@ -1,32 +1,38 @@
 import * as assert from 'assert';
 import { describe, it } from 'mocha';
 import {
+	containsFailure,
 	createCardinalFailure, createDataFailure,
 	createErrorFailure, createFailure,
-	createMessageFailure, failureSeverity, isCardinalFailure,
+	createMessageFailure, createResult, failureSeverity, isCardinalFailure,
 	isDataFailure,
 	isErrorFailure,
 	isMessageFailure,
 	resolveFailureValue
 } from '../source';
 
+
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 describe('isErrorFailure', () => {
 	it('should return true if failure is a ErrorFailure', () => {
 		assert.strictEqual(isErrorFailure({
 			severity : failureSeverity.error,
+			messages : [],
 			error : new Error('foo')
 		}), true);
 		assert.strictEqual(isErrorFailure({
 			severity : failureSeverity.error,
+			messages : [],
 			code : 1
 		}), false);
 		assert.strictEqual(isErrorFailure({
 			severity : failureSeverity.error,
+			messages : [],
 			message : 'foo'
 		}), false);
 		assert.strictEqual(isErrorFailure({
 			severity : failureSeverity.error,
+			messages : [],
 			data : { foo : 1 }
 		}), false);
 	});
@@ -36,18 +42,22 @@ describe('isCardinalFailure', () => {
 	it('should return true if failure is a ErrorFailure', () => {
 		assert.strictEqual(isCardinalFailure({
 			severity : failureSeverity.error,
+			messages : [],
 			error : new Error('foo')
 		}), false);
 		assert.strictEqual(isCardinalFailure({
 			severity : failureSeverity.error,
+			messages : [],
 			code : 1
 		}), true);
 		assert.strictEqual(isCardinalFailure({
 			severity : failureSeverity.error,
+			messages : [],
 			message : 'foo'
 		}), false);
 		assert.strictEqual(isCardinalFailure({
 			severity : failureSeverity.error,
+			messages : [],
 			data : { foo : 1 }
 		}), false);
 	});
@@ -57,18 +67,22 @@ describe('isMessageFailure', () => {
 	it('should return true if failure is a ErrorFailure', () => {
 		assert.strictEqual(isMessageFailure({
 			severity : failureSeverity.error,
+			messages : [],
 			error : new Error('foo')
 		}), false);
 		assert.strictEqual(isMessageFailure({
 			severity : failureSeverity.error,
+			messages : [],
 			code : 1
 		}), false);
 		assert.strictEqual(isMessageFailure({
 			severity : failureSeverity.error,
+			messages : [],
 			message : 'foo'
 		}), true);
 		assert.strictEqual(isMessageFailure({
 			severity : failureSeverity.error,
+			messages : [],
 			data : { foo : 1 }
 		}), false);
 	});
@@ -78,18 +92,22 @@ describe('isDataFailure', () => {
 	it('should return true if failure is a ErrorFailure', () => {
 		assert.strictEqual(isDataFailure({
 			severity : failureSeverity.error,
+			messages : [],
 			error : new Error('foo')
 		}), false);
 		assert.strictEqual(isDataFailure({
 			severity : failureSeverity.error,
+			messages : [],
 			code : 1
 		}), false);
 		assert.strictEqual(isDataFailure({
 			severity : failureSeverity.error,
+			messages : [],
 			message : 'foo'
 		}), false);
 		assert.strictEqual(isDataFailure({
 			severity : failureSeverity.error,
+			messages : [],
 			data : { foo : 1 }
 		}), true);
 	});
@@ -138,4 +156,33 @@ describe('resolveFailureValue', () => {
 		assert.strictEqual(resolveFailureValue(createFailure('foo')), 'foo');
 		assert.strictEqual(resolveFailureValue(createFailure(obj)), obj);
 	});
+});
+
+describe('containsFailure', () => {
+	it('should return true if a failure is included', () => {
+		const m = createFailure('foo');
+		const f0 = createFailure('f0');
+		const f1 = createFailure('f1');
+		const f2 = createFailure('f2', failureSeverity.error, [ m ]);
+		const f3 = createFailure('f3', failureSeverity.error, [ f0, f1 ]);
+
+		assert.strictEqual(
+			containsFailure(createResult('foo', [ f0, f1 ]), m),
+			false
+		);
+		assert.strictEqual(
+			containsFailure(createResult('foo', [ f0, f1, m ]), m),
+			true
+		);
+		assert.strictEqual(
+			containsFailure(createResult('foo', [ f0, f1, f3 ]), m),
+			false
+		);
+		assert.strictEqual(
+			containsFailure(createResult('foo', [ f0, f1, f2 ]), m),
+			true
+		);
+	});
+
+	it('should avoid reference loops');
 });
