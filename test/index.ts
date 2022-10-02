@@ -2,7 +2,8 @@ import * as assert from 'assert';
 import { describe, it } from 'mocha';
 import * as failure from '../source/failure';
 import * as maybe from '../source/maybe';
-import * as tryMaybe from '../source/try';
+import * as flow from '../source/flow';
+import * as native from '../source/native';
 import * as root from '../source';
 
 
@@ -10,10 +11,10 @@ import * as root from '../source';
 describe('failure api', () => {
 	it('should contain exposed interfaces', () => {
 		const a:root.FailureSeverity = 0;
-		const b:root.ErrorFailure = { severity : 0, error : new Error() };
-		const c:root.CardinalFailure = { severity : 0, code : 1 };
-		const d:root.MessageFailure = { severity : 0, message : 'foo' };
-		const e:root.DataFailure<{ foo : number }> = { severity : 0, data : { foo : 1 }};
+		const b:root.ErrorFailure = { severity : 0, error : new Error(), messages : [] };
+		const c:root.CardinalFailure = { severity : 0, code : 1, messages : [] };
+		const d:root.MessageFailure = { severity : 0, message : 'foo', messages : [] };
+		const e:root.DataFailure<{ foo : number }> = { severity : 0, data : { foo : 1 }, messages : [] };
 		let f:root.Failure = b;
 
 		f = c;
@@ -25,7 +26,7 @@ describe('failure api', () => {
 		const i:failure.CardinalFailure = c;
 		const j:failure.MessageFailure = d;
 		const k:failure.DataFailure<{ foo : number }> = e;
-		const l:root.Failures = [{ severity : 0, message : 'foo' }];
+		const l:root.Failures = [{ severity : 0, message : 'foo', messages : [] }];
 		const m:failure.Failures = l;
 	});
 
@@ -49,9 +50,9 @@ describe('failure api', () => {
 
 describe('result api', () => {
 	it('should contain exposed interfaces', () => {
-		const a:root.Result<{ foo : 1 }> = { value : { foo : 1 }};
-		const b:root.Maybe<{ foo : 1 }> = { value : { foo : 1 }};
-		const c:root.Maybe<{ foo : 1 }> = { severity : 0, message : 'foo' };
+		const a:root.Result<{ foo : 1 }> = { value : { foo : 1 }, messages : [] };
+		const b:root.Maybe<{ foo : 1 }> = { value : { foo : 1 }, messages : [] };
+		const c:root.Maybe<{ foo : 1 }> = { severity : 0, message : 'foo', messages : [] };
 		const d:maybe.Result<{ foo : 1 }> = a;
 		const e:maybe.Maybe<{ foo : 1 }> = b;
 		const f:maybe.Maybe<{ foo : 1 }> = c;
@@ -64,9 +65,23 @@ describe('result api', () => {
 	});
 });
 
-describe('try api', () => {
+describe('flow api', () => {
+	it('should contain exposed interfaces', () => {
+		const a:root.processValue<number, string> = value => root.createResult(value.toFixed(0));
+		const b:root.processFailure<unknown, string> = value => value;
+	});
+
 	it('should contain exposed methods', () => {
-		assert.strictEqual(root.tryMaybe, tryMaybe.tryMaybe);
-		assert.strictEqual(root.tryResolve, tryMaybe.tryResolve);
+		assert.strictEqual(root.may, flow.may);
+		assert.strictEqual(root.and, flow.and);
+		assert.strictEqual(root.or, flow.or);
+		assert.strictEqual(root.resolve, flow.resolve);
+	});
+});
+
+describe('native api', () => {
+	it('should contain exposed methods', () => {
+		assert.strictEqual(root.filter, native.filter);
+		assert.strictEqual(root.result, native.result);
 	});
 });
