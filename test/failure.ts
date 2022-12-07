@@ -4,7 +4,7 @@ import {
 	containsFailure,
 	createCardinalFailure, createDataFailure,
 	createErrorFailure, createFailure,
-	createMessageFailure, createResult, failureSeverity, isCardinalFailure,
+	createMessageFailure, createResult, failureSeverity, flattenFailure, flattenFailures, isCardinalFailure,
 	isDataFailure,
 	isErrorFailure,
 	isMessageFailure,
@@ -181,6 +181,44 @@ describe('containsFailure', () => {
 		assert.strictEqual(
 			containsFailure(createResult('foo', [ f0, f1, f2 ]), m),
 			true
+		);
+	});
+
+	it('should avoid reference loops');
+});
+
+describe('flattenFailures', () => {
+	it('should flatten a tree of messages', () => {
+		const f0 = createFailure('f0');
+		const f1 = createFailure('f1');
+		const f2 = createFailure('f2', failureSeverity.warn, [ f1, f0 ]);
+		const f3 = createFailure('f3');
+		const f4 = createFailure('f4', failureSeverity.warn, [ f3 ]);
+		const f5 = createFailure('f5');
+		const f6 = createFailure('f6', failureSeverity.warn, [ f5, f4, f3, f2, f1, f0 ]);
+
+		assert.deepStrictEqual(
+			flattenFailures([ f6 ]),
+			[ f0, f1, f2, f3, f4, f5, f6 ]
+		);
+	});
+
+	it('should avoid reference loops');
+});
+
+describe('flattenFailure', () => {
+	it('should flatten a failure', () => {
+		const f0 = createFailure('f0');
+		const f1 = createFailure('f1');
+		const f2 = createFailure('f2', failureSeverity.warn, [ f1, f0 ]);
+		const f3 = createFailure('f3');
+		const f4 = createFailure('f4', failureSeverity.warn, [ f3 ]);
+		const f5 = createFailure('f5');
+		const f6 = createFailure('f6', failureSeverity.warn, [ f5, f4, f3, f2, f1, f0 ]);
+
+		assert.deepStrictEqual(
+			flattenFailure(f6),
+			[ f0, f1, f2, f3, f4, f5, f6 ]
 		);
 	});
 

@@ -117,3 +117,19 @@ export function containsFailure(maybe:FailuresProvider, failure:Failure) : boole
 
 	return false;
 }
+
+export function flattenFailures(failures:Failures, res:Failure[] = []) : Failures {
+	for (let i = failures.length - 1; i > -1; i -= 1) {
+		const failure = failures[i];
+
+		if (failure.messages.length !== 0) flattenFailures(failure.messages, res);
+
+		if (!res.includes(failure)) res.push(failure);
+	}
+
+	return res;
+}
+
+export function flattenFailure(failure:Failure) : Failures {
+	return [ ...flattenFailures(failure.messages), failure ];
+}
