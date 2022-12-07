@@ -1,7 +1,7 @@
-import { Failure, Failures, MessagesProvider } from './failure';
+import { Failure, Failures, FailuresProvider } from './failure';
 
 
-export interface Result<T> extends MessagesProvider {
+export interface Result<T> extends FailuresProvider {
 	readonly value : T;
 }
 

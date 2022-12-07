@@ -1,10 +1,10 @@
 export type FailureSeverity = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
-export interface MessagesProvider {
+export interface FailuresProvider {
 	readonly messages : Failures;
 }
 
-interface FailureCommon extends MessagesProvider {
+interface FailureCommon extends FailuresProvider {
 	readonly severity : FailureSeverity;
 }
 
@@ -110,9 +110,9 @@ export function resolveFailureValue(failure:Failure) : unknown {
 	else return failure.data;
 }
 
-export function containsFailure(maybe:MessagesProvider, message:Failure) : boolean {
+export function containsFailure(maybe:FailuresProvider, failure:Failure) : boolean {
 	for (const msg of maybe.messages) {
-		if (msg === message || containsFailure(msg, message)) return true;
+		if (msg === failure || containsFailure(msg, failure)) return true;
 	}
 
 	return false;
