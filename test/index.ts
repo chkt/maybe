@@ -81,7 +81,7 @@ describe('flow api', () => {
 
 describe('native api', () => {
 	it('should contain exposed methods', () => {
-		assert.strictEqual(root.filter, native.filter);
-		assert.strictEqual(root.result, native.result);
+		assert.strictEqual(root.maybeFrom, native.maybeFrom);
+		assert.strictEqual(root.resultFrom, native.resultFrom);
 	});
 });
