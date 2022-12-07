@@ -2,8 +2,32 @@ import * as assert from 'assert';
 import { describe, it } from 'mocha';
 import { createFailure, failureSeverity, resolveFailureValue } from '../source/failure';
 import { createResult } from '../source/maybe';
-import { and, may, or, processFailure, processValue, resolve } from '../source/flow';
+import { and, apply, may, or, processFailure, processValue, resolve } from '../source/flow';
 
+
+describe('apply', () => {
+	it('should apply f() to g()', () => {
+		function a(v:boolean) : number {
+			return Number(v);
+		}
+
+		function b(fn:(v:boolean) => number, value:boolean) : string {
+			return `${ fn(value).toFixed(0) }-bar`;
+		}
+
+		function c(fn:(v:boolean) => string, value:boolean) : { value : string } {
+			return { value : fn(value) };
+		}
+
+		const ab = apply(b, a);
+		const abc = apply(c, ab);
+
+		assert.strictEqual(ab(false), '0-bar');
+		assert.strictEqual(ab(true), '1-bar');
+		assert.deepStrictEqual(abc(false), { value : '0-bar' });
+		assert.deepStrictEqual(abc(true), { value : '1-bar' });
+	});
+});
 
 describe('and', () => {
 	it('should process a Result', () => {
@@ -80,7 +104,7 @@ describe('or', () => {
 describe('may', () => {
 	it('should wrap a operation in a try/catch block', () => {
 		assert.deepStrictEqual(
-			may(() => createResult('foo')),
+			may(() => createResult('foo'), undefined),
 			createResult('foo')
 		);
 		assert.deepStrictEqual(
@@ -88,7 +112,7 @@ describe('may', () => {
 			createResult('foobar')
 		);
 		assert.deepStrictEqual(
-			may(() => createFailure('foo', failureSeverity.warn)),
+			may(() => createFailure('foo', failureSeverity.warn), undefined),
 			createFailure('foo', failureSeverity.warn)
 		);
 		assert.deepStrictEqual(
@@ -96,7 +120,7 @@ describe('may', () => {
 			createFailure('foobar', failureSeverity.warn)
 		);
 		assert.deepStrictEqual(
-			may(() => { throw new Error('foo') }),
+			may(() => { throw new Error('foo') }, undefined),
 			createFailure(new Error('foo'))
 		);
 		assert.deepStrictEqual(
@@ -112,15 +136,15 @@ describe('resolve', () => {
 		const f1 = createFailure('f1');
 
 		assert.deepStrictEqual(
-			await resolve(createResult(Promise.resolve('foo'), [ f0, f1 ])),
+			await resolve(() => createResult(Promise.resolve('foo'), [ f0, f1 ]), undefined),
 			createResult('foo', [ f0, f1 ])
 		);
 		assert.deepStrictEqual(
-			await resolve(createResult(Promise.reject(new Error('foo')), [ f0, f1 ])),
+			await resolve(() => createResult(Promise.reject(new Error('foo')), [ f0, f1 ]), undefined),
 			createFailure(new Error('foo'), failureSeverity.error, [ f0, f1 ])
 		);
 		assert.deepStrictEqual(
-			await resolve(createFailure('foo', failureSeverity.warn, [ f0, f1 ])),
+			await resolve(() => createFailure('foo', failureSeverity.warn, [ f0, f1 ]), undefined),
 			createFailure('foo', failureSeverity.warn, [ f0, f1 ])
 		);
 	});
