@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
 import { createFailure } from '../source/failure';
 import { createResult } from '../source/maybe';
-import { maybeFrom, resultFrom } from '../source/native';
+import { failureFrom, maybeFrom, resultFrom } from '../source/native';
 
 
 describe('maybeFrom', () => {
@@ -36,6 +36,19 @@ describe('resultFrom', () => {
 		assert.deepStrictEqual(
 			resultFrom(value => `${ value }bar`, 'foo'),
 			createResult('foobar')
+		);
+	});
+});
+
+describe('failureFrom', () => {
+	it('should failurify a return value', () => {
+		assert.deepStrictEqual(
+			failureFrom(() => 'foo'),
+			createFailure('foo')
+		);
+		assert.deepStrictEqual(
+			failureFrom(value => `${ value }bar`, 'foo'),
+			createFailure('foobar')
 		);
 	});
 });
