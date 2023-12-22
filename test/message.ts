@@ -1,12 +1,15 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
 import {
+	Message,
 	Messages,
 	containsMessage,
 	createCardinalMessage,
 	createDataMessage,
 	createErrorMessage,
-	createMessage, createTextMessage, flattenMessage,
+	createMessage,
+	createTextMessage,
+	flattenMessage,
 	flattenMessages,
 	isCardinalMessage,
 	isDataMessage,
@@ -336,7 +339,16 @@ describe('containsMessage', () => {
 		);
 	});
 
-	it('should reject reference loops');
+	it('should detect reference loops', () => {
+		const children:Message[] = [];
+		const m0 = createTextMessage('foo', messageSeverity.error, children);
+		const m1 = createTextMessage('bar', messageSeverity.error, [ m0 ]);
+		const m2 = createTextMessage('baz');
+
+		children.push(m1);
+
+		assert.deepStrictEqual(containsMessage(m0, m2), false);
+	});
 });
 
 describe('flattenMessages', () => {
@@ -355,7 +367,18 @@ describe('flattenMessages', () => {
 		);
 	});
 
-	it('should reject reference loops');
+	it('should detect reference loops', () => {
+		const children:Message[] = [];
+		const m0 = createTextMessage('m0', messageSeverity.error, children);
+		const m1 = createTextMessage('m1', messageSeverity.error, [ m0 ]);
+
+		children.push(m1);
+
+		assert.deepStrictEqual(
+			flattenMessages([ m0 ]),
+			[ m1, m0 ]
+		);
+	});
 });
 
 describe('flattenMessage', () => {
@@ -374,5 +397,16 @@ describe('flattenMessage', () => {
 		);
 	});
 
-	it('should reject reference loops');
+	it('should detect reference loops', () => {
+		const children:Message[] = [];
+		const m0 = createTextMessage('m0', messageSeverity.error, children);
+		const m1 = createTextMessage('m1', messageSeverity.error, [ m0 ]);
+
+		children.push(m1);
+
+		assert.deepStrictEqual(
+			flattenMessage(m1),
+			[ m0, m1 ]
+		);
+	});
 });

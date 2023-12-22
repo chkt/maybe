@@ -10,11 +10,11 @@ export const enum messageSeverity {
 
 export type MessageSeverity = messageSeverity;
 
-export interface MessageComposition {
+export interface MessageComposite {
 	readonly messages : Messages;
 }
 
-interface MessageCommon extends MessageComposition {
+interface MessageCommon extends MessageComposite {
 	readonly severity : MessageSeverity;
 }
 
@@ -30,7 +30,7 @@ export interface TextMessage extends MessageCommon {
 	readonly text : string;
 }
 
-type Data = Record<string | symbol, unknown>;
+type Data = Readonly<Record<string | symbol, unknown>>;
 
 export interface DataMessage<T extends Data> extends MessageCommon {
 	readonly data : T;
@@ -43,18 +43,18 @@ export type Message<T = unknown> =
 	CardinalMessage |
 	TextMessage |
 	DataMessage<Extract<T, Data>> |
-	DataMessage<{ value : T }>;
+	DataMessage<{ readonly value : T }>;
 
 type MessageDistinct<T> =
 	T extends number ?
-		CardinalMessage | DataMessage<{ value: T }> :
+		CardinalMessage | DataMessage<{ readonly value: T }> :
 		T extends string ?
 			TextMessage :
 			T extends Error ?
 				ErrorMessage<T> :
 				T extends Data ?
 					DataMessage<T> :
-					DataMessage<{ value: T }>;
+					DataMessage<{ readonly value: T }>;
 
 export type Messages = readonly Message[];
 
@@ -144,26 +144,26 @@ export function resolveMessageValue<T>(message:Message<T>) : unknown {
 	else return message.data;
 }
 
-export function containsMessage(parent:MessageComposition, message:Message) : boolean {
-	for (const child of parent.messages) {
-		if (child === message || containsMessage(child, message)) return true;
-	}
-
-	return false;
-}
-
-export function flattenMessages(messages:Messages, res:Message[] = []) : Messages {
+function flatten(path:Messages, messages:Messages, res:Message[] = []) : Messages {
 	for (let i = messages.length - 1; i > -1; i -= 1) {
 		const message = messages[i];
 
-		if (message.messages.length !== 0) flattenMessages(message.messages, res);
+		if (!path.includes(message)) {
+			if (message.messages.length !== 0) flatten([ ...path, message ], message.messages, res);
 
-		if (!res.includes(message)) res.push(message);
+			if (!res.includes(message)) res.push(message);
+		}
 	}
 
 	return res;
 }
 
+export function containsMessage(parent:MessageComposite, message:Message) : boolean {
+	return flatten([], parent.messages).includes(message);
+}
+
+export const flattenMessages:(messages:Messages) => Messages = flatten.bind(null, []);
+
 export function flattenMessage(message:Message) : Messages {
-	return [ ...flattenMessages(message.messages), message ];
+	return [ ...flatten([ message ], message.messages), message ];
 }
