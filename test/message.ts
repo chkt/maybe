@@ -15,6 +15,8 @@ import {
 	isDataMessage,
 	isErrorMessage,
 	isTextMessage,
+	mergeCompositeAb,
+	mergeCompositeBa,
 	messageSeverity,
 	resolveMessageValue
 } from '../source/message';
@@ -408,5 +410,67 @@ describe('flattenMessage', () => {
 			flattenMessage(m1),
 			[ m0, m1 ]
 		);
+	});
+});
+
+describe('mergeCompositeAb', () => {
+	it('should merge the messages of composite a and b', () => {
+		const m0 = createMessage('m0');
+		const m1 = createMessage('m1');
+		const m2 = createMessage('m2', messageSeverity.warn, [ m0, m1 ]);
+		const m3 = createMessage('m3');
+		const m4 = createMessage('m4');
+		const m5 = createMessage('m5', messageSeverity.warn, [ m3, m4 ]);
+
+		assert.deepStrictEqual(mergeCompositeAb(
+			{ messages : [ m0, m1 ] },
+			{ messages : [ m3, m4 ] }
+		), {
+			messages : [ m0, m1, m3, m4 ]
+		});
+		assert.deepStrictEqual(mergeCompositeAb(
+			{ messages : [ m2 ] },
+			{ messages : [ m5 ] }
+		), {
+			messages : [ m2, m5 ]
+		});
+		assert.deepStrictEqual(mergeCompositeAb(
+			{ foo : 'bar', messages : [ m0 ] },
+			{ foo : 'baz', messages : [ m1 ] }
+		), {
+			foo : 'bar',
+			messages : [ m0, m1 ]
+		});
+	});
+});
+
+describe('mergeCompositeBa', () => {
+	it('should merge the messages of composite b and a', () => {
+		const m0 = createMessage('m0');
+		const m1 = createMessage('m1');
+		const m2 = createMessage('m2', messageSeverity.warn, [ m0, m1 ]);
+		const m3 = createMessage('m3');
+		const m4 = createMessage('m4');
+		const m5 = createMessage('m5', messageSeverity.warn, [ m3, m4 ]);
+
+		assert.deepStrictEqual(mergeCompositeBa(
+			{ messages : [ m0, m1 ] },
+			{ messages : [ m3, m4 ] }
+		), {
+			messages : [ m3, m4, m0, m1 ]
+		});
+		assert.deepStrictEqual(mergeCompositeBa(
+			{ messages : [ m2 ] },
+			{ messages : [ m5 ] }
+		), {
+			messages : [ m5, m2 ]
+		});
+		assert.deepStrictEqual(mergeCompositeBa(
+			{ foo : 'bar', messages : [ m0 ] },
+			{ foo : 'baz', messages : [ m1 ] }
+		), {
+			foo : 'bar',
+			messages : [ m1, m0 ]
+		});
 	});
 });

@@ -167,3 +167,17 @@ export const flattenMessages:(messages:Messages) => Messages = flatten.bind(null
 export function flattenMessage(message:Message) : Messages {
 	return [ ...flatten([ message ], message.messages), message ];
 }
+
+export function mergeCompositeAb<T extends MessageComposite, U extends MessageComposite>(a:T, b:U) : T {
+	return {
+		...a,
+		messages : [ ...a.messages, ...b.messages ]
+	};
+}
+
+export function mergeCompositeBa<T extends MessageComposite, U extends MessageComposite>(a:T, b:U) : T {
+	return {
+		...a,
+		messages : [ ...b.messages, ...a.messages ]
+	};
+}
