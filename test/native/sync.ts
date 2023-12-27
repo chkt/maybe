@@ -1,13 +1,20 @@
-/* eslint-disable @typescript-eslint/no-magic-numbers */
 import * as assert from 'node:assert';
-import { describe, it } from 'mocha';
-import { createFailure } from '../source/failure';
-import { createResult } from '../source/maybe';
-import { failureFrom, maybeFrom, resultFrom } from '../source/native';
+import { describe, it} from 'mocha';
+import { failureFrom, maybeFrom, resultFrom } from '../../source/native/sync';
+import { createFailure, createResult } from '../../source/maybe';
 
 
 describe('maybeFrom', () => {
 	it('should maybeify a return value', () => {
+		const err = new Error('bang');
+
+		assert.deepStrictEqual(
+			maybeFrom(() => 'foo'),
+			createResult('foo')
+		);
+		assert.throws(() => maybeFrom(() => {
+			throw err;
+		}));
 		assert.deepStrictEqual(
 			maybeFrom(() => 'foo', v => typeof v === 'string'),
 			createResult('foo')
