@@ -1,8 +1,7 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
-import { processFailure, processValue } from '../../source';
 import { and, onFailure, onResult, or } from '../../source/flow/sync';
-import { createFailure, createResult } from '../../source/maybe';
+import { Failure, Result, createFailure, createResult } from '../../source/maybe';
 import { messageSeverity, resolveMessageValue } from '../../source/message';
 
 
@@ -13,12 +12,12 @@ describe('and', () => {
 		const f2 = createFailure('f2');
 		const f3 = createFailure('f3');
 
-		const resFn:processValue<string, string> =
+		const resFn:(v:string) => Result<string> =
 			value => createResult(
 				`${ value }bar`,
 				[ f2, f3 ]
 			);
-		const failFn:processValue<string, never> =
+		const failFn:(v:string) => Failure<string> =
 			value => createFailure(
 				`${ value }baz`,
 				messageSeverity.fatal,
@@ -52,12 +51,12 @@ describe('or', () => {
 		const f3 = createFailure('f3');
 		const f = createFailure('foo', messageSeverity.warn, [ f0, f1 ]);
 
-		const resFn:processFailure<string, string> =
+		const resFn:(v:Failure<string>) => Result<string> =
 			value => createResult(
 				`${ String(resolveMessageValue(value)) }bar`,
 				[ f2, f3 ]
 			);
-		const failFn:processFailure<string, string> =
+		const failFn:(v:Failure<string>) => Failure<string> =
 			value => createFailure(
 				`${ String(resolveMessageValue(value)) }baz`,
 				messageSeverity.fatal,
