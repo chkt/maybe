@@ -5,7 +5,7 @@ import * as async from '../../source/flow/async';
 import * as sync from '../../source/flow/sync';
 
 
-describe('module', () =>{
+describe('module', () => {
 	it('should expose public functions', () => {
 		assert.strictEqual(root.and, sync.and);
 		assert.strictEqual(root.or, sync.or);
@@ -15,5 +15,5 @@ describe('module', () =>{
 		assert.strictEqual(root.orAsync, async.or);
 		assert.strictEqual(root.onResultAsync, async.onResult);
 		assert.strictEqual(root.onFailureAsync, async.onFailure);
-	})
+	});
 });

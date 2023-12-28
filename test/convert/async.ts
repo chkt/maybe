@@ -5,6 +5,7 @@ import { createFailure, createResult } from '../../source/maybe';
 import { messageSeverity } from '../../source/message';
 
 
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 describe('resolve', () => {
 	it('should resolve a Maybe wrapping a Promise', async () => {
 		const f0 = createFailure('f0');

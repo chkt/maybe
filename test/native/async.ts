@@ -4,6 +4,7 @@ import { createFailure, createResult } from '../../source/maybe';
 import { failureFrom, maybeFrom, resultFrom } from '../../source/native/async';
 
 
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 describe('maybeFrom', () => {
 	it('should maybeify a promise', async () => {
 		const err = new Error('bang');

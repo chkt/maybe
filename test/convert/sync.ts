@@ -5,6 +5,7 @@ import { createFailure, createResult } from '../../source/maybe';
 import { messageSeverity } from '../../source/message';
 
 
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 describe('may', () => {
 	it('should wrap a operation in a try/catch block', () => {
 		assert.deepStrictEqual(

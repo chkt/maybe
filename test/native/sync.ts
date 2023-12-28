@@ -1,9 +1,10 @@
 import * as assert from 'node:assert';
-import { describe, it} from 'mocha';
-import { failureFrom, maybeFrom, resultFrom } from '../../source/native/sync';
+import { describe, it } from 'mocha';
 import { createFailure, createResult } from '../../source/maybe';
+import { failureFrom, maybeFrom, resultFrom } from '../../source/native/sync';
 
 
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 describe('maybeFrom', () => {
 	it('should maybeify a return value', () => {
 		const err = new Error('bang');
