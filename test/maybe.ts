@@ -4,7 +4,6 @@ import { createFailure, createResult, isFailure, isResult, mergeMessagesAb, merg
 import { createMessage, messageSeverity } from '../source/message';
 
 
-
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 describe('isResult', () => {
 	it('should return true if a Maybe is a Result', () => {
