@@ -1,4 +1,4 @@
-import { createMessage, Message, MessageComposite, Messages } from './message';
+import { Message, MessageComposite, Messages, createMessage } from './message';
 
 
 export interface Result<T> extends MessageComposite {
@@ -30,13 +30,13 @@ export function createResult<T>(value:T, messages:Messages = []) : Result<T> {
  */
 export const createFailure = createMessage;
 
-export function mergeMessagesAb<T extends MessageComposite>(a:T, b:Maybe<unknown>) : T {
+export function mergeMessagesAb<T extends MessageComposite, F>(a:T, b:Maybe<unknown, F>) : T {
 	const messages = isResult(b) ? b.messages : [ b ];
 
 	return { ...a, messages : [ ...a.messages, ...messages ] };
 }
 
-export function mergeMessagesBa<T extends MessageComposite>(a:T, b:Maybe<unknown>) : T {
+export function mergeMessagesBa<T extends MessageComposite, F>(a:T, b:Maybe<unknown, F>) : T {
 	const messages = isResult(b) ? b.messages : [ b ];
 
 	return { ...a, messages : [ ...messages, ...a.messages ] };
