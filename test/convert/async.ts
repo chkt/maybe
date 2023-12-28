@@ -1,9 +1,29 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
-import { all } from '../../source/convert/async';
+import { all, resolve } from '../../source/convert/async';
 import { createFailure, createResult } from '../../source/maybe';
 import { messageSeverity } from '../../source/message';
 
+
+describe('resolve', () => {
+	it('should resolve a Maybe wrapping a Promise', async () => {
+		const f0 = createFailure('f0');
+		const f1 = createFailure('f1');
+
+		assert.deepStrictEqual(
+			await resolve(() => createResult(Promise.resolve('foo'), [ f0, f1 ]), undefined),
+			createResult('foo', [ f0, f1 ])
+		);
+		assert.deepStrictEqual(
+			await resolve(() => createResult(Promise.reject(new Error('foo')), [ f0, f1 ]), undefined),
+			createFailure(new Error('foo'), messageSeverity.error, [ f0, f1 ])
+		);
+		assert.deepStrictEqual(
+			await resolve(() => createFailure('foo', messageSeverity.warn, [ f0, f1 ]), undefined),
+			createFailure('foo', messageSeverity.warn, [ f0, f1 ])
+		);
+	});
+});
 
 describe('all', () => {
 	it('should process an Array of values', async () => {

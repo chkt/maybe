@@ -1,6 +1,20 @@
-import { createResult, Failure, isResult, Maybe, mergeMessagesAb } from '../maybe';
+import { Failure, Maybe, createFailure, createResult, isResult, mergeMessagesAb, mergeMessagesBa } from '../maybe';
 import { MessageComposite } from '../message';
 
+
+export async function resolve<T, R>(fn:(v:T) => Maybe<Promise<R>>, value:T) : Promise<Maybe<R>> {
+	const maybe = fn(value);
+
+	if (isResult(maybe)) {
+		try {
+			return createResult(await maybe.value, maybe.messages);
+		}
+		catch (err) {
+			return mergeMessagesBa(createFailure(err), maybe);
+		}
+	}
+	else return maybe;
+}
 
 export async function all<T, R, F>(fn:(value:T) => Promise<Maybe<R, F>>, values:readonly T[]) : Promise<Maybe<R[], F>> {
 	const res:R[] = [];
