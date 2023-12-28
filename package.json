@@ -1,7 +1,7 @@
 {
 	"name": "@chkt/maybe",
 	"description": "Minimalistic application flow handling",
-	"version": "1.0.0-beta.5",
+	"version": "1.0.0-beta.6",
 	"license": "MIT",
 	"keywords": [
 		"Failure",
@@ -29,23 +29,23 @@
 	"scripts": {
 		"prepublishOnly": "yarn outdated && yarn test && yarn lint && yarn build && yarn doc",
 		"lint": "yarn eslint source/*.ts source/**/*.ts test/*.ts test/**/*.ts",
-		"test": "yarn mocha -r ts-node/register test/*.ts",
+		"test": "yarn mocha -r ts-node/register test/*.ts test/**/*.ts",
 		"coverage": "nyc yarn test",
-		"doc": "yarn typedoc --plugin ../../chkt/typedoc-theme-md --theme md --readme ./module.md --out ./.docs source/*.ts && cp ./.docs/modules.md ./readme.md",
+		"doc": "yarn typedoc --plugin ../../chkt/typedoc-theme-md --theme md --readme ./module.md --out ./.docs source/*.ts source/**/*.ts && cp ./.docs/modules.md ./readme.md",
 		"build": "rm -rf ./dist/* && yarn tsc"
 	},
 	"devDependencies": {
-		"@chkt/eslint-config": "^1.0",
+		"@chkt/eslint-config": "^1.0.8",
 		"@types/mocha": "^10.0",
-		"@types/node": "^18.11",
-		"@typescript-eslint/eslint-plugin": "^5.45",
-		"@typescript-eslint/parser": "^5.45",
-		"eslint": "^8.29",
-		"mocha": "^10.1",
-		"nyc": "^15.1",
+		"@types/node": "^20.10",
+		"@typescript-eslint/eslint-plugin": "^6.16",
+		"@typescript-eslint/parser": "^6.16",
+		"eslint": "^8.55",
+		"mocha": "^10.2",
+		"nyc": "15.1",
 		"ts-node": "^10.9",
-		"typedoc": "^0.23",
-		"typescript": "^4.9"
+		"typedoc": "^0.25",
+		"typescript": "^5.3"
 	},
 	"dependencies": {}
 }
