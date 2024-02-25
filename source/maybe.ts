@@ -8,7 +8,7 @@ export interface Result<T> extends MessageComposite {
 /**
  * @alias of Message
  */
-export type Failure<T> = Message<T>;
+export type Failure<T = unknown> = Message<T>;
 
 export type Maybe<T, F = unknown> = Result<T> | Failure<F>;
 

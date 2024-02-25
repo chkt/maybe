@@ -30,43 +30,47 @@ export interface TextMessage extends MessageCommon {
 	readonly text : string;
 }
 
-type Data = Readonly<Record<string | symbol, unknown>>;
+export type DataRecord = Readonly<Record<string | symbol, unknown>>;
 
-export interface DataMessage<T extends Data> extends MessageCommon {
+export interface DataValue<T> {
+	readonly value : T;
+}
+
+export interface DataMessage<T> extends MessageCommon {
 	readonly data : T;
 }
 
-type DataMessageDistinct<T> = T extends Data ? DataMessage<T> : DataMessage<{ value: T }>;
+type DataMessageDistinct<T> = T extends DataRecord ? DataMessage<T> : DataMessage<DataValue<T>>;
 
 export type Message<T = unknown> =
-	ErrorMessage<Extract<T, Error>> |
+	ErrorMessage<T extends Error ? T : Error> |
 	CardinalMessage |
 	TextMessage |
-	DataMessage<Extract<T, Data>> |
-	DataMessage<{ readonly value : T }>;
+	DataMessage<T extends DataRecord ? T : DataRecord> |
+	DataMessage<DataValue<T>>;
 
 type MessageDistinct<T> =
 	T extends number ?
-		CardinalMessage | DataMessage<{ readonly value: T }> :
+		CardinalMessage | DataMessage<DataValue<T>> :
 		T extends string ?
 			TextMessage :
 			T extends Error ?
 				ErrorMessage<T> :
-				T extends Data ?
+				T extends DataRecord ?
 					DataMessage<T> :
-					DataMessage<{ readonly value: T }>;
+					DataMessage<DataValue<T>>;
 
 export type Messages = readonly Message[];
 
 
-function isData(value:unknown) : value is Data {
+function isDataRecord(value:unknown) : value is DataRecord {
 	return typeof value === 'object' &&
 		value !== null &&
 		!(value instanceof Error) &&
 		!Array.isArray(value);
 }
 
-export function isErrorMessage<T>(message:Message<T>) : message is ErrorMessage<Extract<T, Error>> {
+export function isErrorMessage<T>(message:Message<T>) : message is ErrorMessage<T extends Error ? T : Error> {
 	return 'error' in message;
 }
 
@@ -78,7 +82,10 @@ export function isTextMessage<T>(message:Message<T>) : message is TextMessage {
 	return 'text' in message;
 }
 
-export function isDataMessage<T>(message:Message<T>) : message is DataMessage<Extract<T, Data>> {
+export function isDataMessage<T>(message:Message<T>) : message is DataMessage<
+	T extends DataRecord ? T : DataRecord> |
+	DataMessage<DataValue<T>
+> {
 	return 'data' in message;
 }
 
@@ -112,7 +119,7 @@ export function createDataMessage<T>(
 	severity:MessageSeverity = messageSeverity.error,
 	messages:Messages = []
 ) : DataMessageDistinct<T> {
-	if (isData(data)) return { data, severity, messages } as DataMessageDistinct<T>;
+	if (isDataRecord(data)) return { data, severity, messages } as DataMessageDistinct<T>;
 	else return { data : { value : data }, severity, messages } as DataMessageDistinct<T>;
 }
 

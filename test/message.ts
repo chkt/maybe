@@ -48,6 +48,21 @@ describe('isErrorMessage', () => {
 			data : { foo : 1 }
 		}), false);
 	});
+
+	it('should guard a ErrorMessage', () => {
+		const error = new Error();
+		const a:Message = { error, severity : messageSeverity.warn, messages : [] };
+		const b:Message = { code : 1, severity : messageSeverity.warn, messages : [] };
+		const c:Message = { text : 'foo', severity : messageSeverity.warn, messages : [] };
+		const d:Message = { data : { value : 1 }, severity : messageSeverity.warn, messages : [] };
+		const e:Message = { data : { foo : 1 }, severity : messageSeverity.warn, messages : [] };
+
+		assert.strictEqual(isErrorMessage(a) ? a.error : false, error);
+		assert.strictEqual(isErrorMessage(b) ? b.error : false, false);
+		assert.strictEqual(isErrorMessage(c) ? c.error : false, false);
+		assert.deepStrictEqual(isErrorMessage(d) ? d.error : false, false);
+		assert.deepStrictEqual(isErrorMessage(e) ? e.error : false, false);
+	});
 });
 
 describe('isCardinalMessage', () => {
@@ -72,6 +87,20 @@ describe('isCardinalMessage', () => {
 			messages : [],
 			data : { foo : 1 }
 		}), false);
+	});
+
+	it('should guard a CardinalMessage', () => {
+		const a:Message = { error : new Error(), severity : messageSeverity.warn, messages : [] };
+		const b:Message = { code : 1, severity : messageSeverity.warn, messages : [] };
+		const c:Message = { text : 'foo', severity : messageSeverity.warn, messages : [] };
+		const d:Message = { data : { value : 1 }, severity : messageSeverity.warn, messages : [] };
+		const e:Message = { data : { foo : 1 }, severity : messageSeverity.warn, messages : [] };
+
+		assert.strictEqual(isCardinalMessage(a) ? a.code : false, false);
+		assert.strictEqual(isCardinalMessage(b) ? b.code : false, 1);
+		assert.strictEqual(isCardinalMessage(c) ? c.code : false, false);
+		assert.strictEqual(isCardinalMessage(d) ? d.code : false, false);
+		assert.strictEqual(isCardinalMessage(e) ? e.code : false, false);
 	});
 });
 
@@ -98,6 +127,20 @@ describe('isTextMessage', () => {
 			data : { foo : 1 }
 		}), false);
 	});
+
+	it('should guard a TextMessage', () => {
+		const a:Message = { error : new Error(), severity : messageSeverity.warn, messages : [] };
+		const b:Message = { code : 1, severity : messageSeverity.warn, messages : [] };
+		const c:Message = { text : 'foo', severity : messageSeverity.warn, messages : [] };
+		const d:Message = { data : { value : 1 }, severity : messageSeverity.warn, messages : [] };
+		const e:Message = { data : { foo : 1 }, severity : messageSeverity.warn, messages : [] };
+
+		assert.strictEqual(isTextMessage(a) ? a.text : false, false);
+		assert.strictEqual(isTextMessage(b) ? b.text : false, false);
+		assert.strictEqual(isTextMessage(c) ? c.text : false, c.text);
+		assert.strictEqual(isTextMessage(d) ? d.text : false, false);
+		assert.strictEqual(isTextMessage(e) ? e.text : false, false);
+	});
 });
 
 describe('isDataMessage', () => {
@@ -122,6 +165,20 @@ describe('isDataMessage', () => {
 			messages : [],
 			data : { foo : 1 }
 		}), true);
+	});
+
+	it('should guard a DataMessage', () => {
+		const a:Message = { error : new Error(), severity : messageSeverity.warn, messages : [] };
+		const b:Message = { code : 1, severity : messageSeverity.warn, messages : [] };
+		const c:Message = { text : 'foo', severity : messageSeverity.warn, messages : [] };
+		const d:Message = { data : { value : 1 }, severity : messageSeverity.warn, messages : [] };
+		const e:Message = { data : { foo : 1 }, severity : messageSeverity.warn, messages : [] };
+
+		assert.strictEqual(isDataMessage(a) ? a.data : false, false);
+		assert.strictEqual(isDataMessage(b) ? b.data : false, false);
+		assert.strictEqual(isDataMessage(c) ? c.data : false, false);
+		assert.deepStrictEqual(isDataMessage(d) ? d.data : false, { value : 1 });
+		assert.deepStrictEqual(isDataMessage(e) ? e.data : false, { foo : 1 });
 	});
 });
 
