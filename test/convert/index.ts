@@ -9,6 +9,7 @@ describe('module', () => {
 	it('should expose public function', () => {
 		assert.strictEqual(root.may, sync.may);
 		assert.strictEqual(root.all, sync.all);
+		assert.strictEqual(root.blank, sync.blank);
 		assert.strictEqual(root.resolve, async.resolve);
 		assert.strictEqual(root.allAsync, async.all);
 	});

@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
 import { all, resolve } from '../../source/convert/async';
-import { createFailure, createResult } from '../../source/maybe';
+import { Maybe, createFailure, createResult } from '../../source/maybe';
 import { messageSeverity } from '../../source/message';
 
 
@@ -43,7 +43,9 @@ describe('all', () => {
 			messages : f
 		});
 		assert.deepStrictEqual(await all(
-			async v => v % 2 ? createResult(v, [ f[v] ]) : createFailure(v, messageSeverity.warn, [ f[v] ]),
+			async (v) : Promise<Maybe<number>> => v % 2 ?
+				createResult(v, [ f[v] ]) :
+				createFailure(v, messageSeverity.warn, [ f[v] ]),
 			[ 0, 1, 2, 3 ]
 		), {
 			code : 0,

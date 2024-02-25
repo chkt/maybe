@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
-import { all, may } from '../../source/convert/sync';
-import { createFailure, createResult } from '../../source/maybe';
+import { all, blank, may } from '../../source/convert/sync';
+import { Maybe, createFailure, createResult } from '../../source/maybe';
 import { messageSeverity } from '../../source/message';
 
 
@@ -52,7 +52,9 @@ describe('all', () => {
 			messages : f
 		});
 		assert.deepStrictEqual(all(
-			v => v % 2 ? createResult(v, [ f[v] ]) : createFailure(v, messageSeverity.warn, [ f[v] ]),
+			(v) : Maybe<number> => v % 2 ?
+				createResult(v, [ f[v] ]) :
+				createFailure(v, messageSeverity.warn, [ f[v] ]),
 			[ 0, 1, 2, 3 ]
 		), {
 			code : 0,
@@ -72,5 +74,19 @@ describe('all', () => {
 				f[3]
 			]
 		});
+	});
+});
+
+describe('blank', () => {
+	it('should void the value of a Result', () => {
+		const f0 = createFailure('f0');
+		const f1 = createFailure('f1');
+		const f2 = createFailure('f2', messageSeverity.warn, [ f0, f1 ]);
+
+		assert.deepStrictEqual(blank(f2), f2);
+		assert.deepStrictEqual(
+			blank(createResult('foo', [ f1, f0 ])),
+			createResult(undefined, [ f1, f0 ])
+		);
 	});
 });

@@ -26,3 +26,8 @@ export function all<T, R, F>(fn:(v:T) => Maybe<R, F>, values:readonly T[]) : May
 	if (failure) return { ...failure, messages : messages.messages };
 	else return createResult(res, messages.messages);
 }
+
+export function blank<T, M>(maybe:Maybe<T, M>) : Maybe<void, M> {
+	if (isResult(maybe)) return createResult(undefined, maybe.messages);
+	else return maybe;
+}
