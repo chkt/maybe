@@ -9,6 +9,10 @@ describe('module', () => {
 	it('should expose public functions', () => {
 		assert.strictEqual(root.and, sync.and);
 		assert.strictEqual(root.or, sync.or);
+		assert.strictEqual(root.resultIf, sync.resultIf);
+		assert.strictEqual(root.resultIfAsync, async.resultIf);
+		assert.strictEqual(root.failureIf, sync.failureIf);
+		assert.strictEqual(root.failureIfAsync, async.failureIf);
 		assert.strictEqual(root.onResult, sync.onResult);
 		assert.strictEqual(root.onFailure, sync.onFailure);
 		assert.strictEqual(root.andAsync, async.and);

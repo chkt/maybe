@@ -1,6 +1,7 @@
 import {
 	Failure,
 	Maybe,
+	Result,
 	isFailure,
 	isResult,
 	mergeMessagesAb,
@@ -8,10 +9,10 @@ import {
 } from '../maybe';
 
 
-export function and<T, R>(
-	fn:(value:T) => Maybe<R>,
-	maybe:Maybe<T>
-) : Maybe<R> {
+export function and<T, R, M, F>(
+	fn:(value:T) => Maybe<R, F>,
+	maybe:Maybe<T, M>
+) : Maybe<R, M | F> {
 	if (isResult(maybe)) {
 		const res = fn(maybe.value);
 
@@ -20,15 +21,33 @@ export function and<T, R>(
 	else return maybe;
 }
 
-export function or<T, R, F0, F1>(
-	fn:(value:Failure<F0>) => Maybe<R, F1>,
-	maybe:Maybe<T, F0>
-) : Maybe<T | R, F1> {
+export function or<T, R, M, F>(
+	fn:(value:Failure<M>) => Maybe<R, F>,
+	maybe:Maybe<T, M>
+) : Maybe<T | R, F> {
 	if (isFailure(maybe)) {
 		const res = fn(maybe);
 
 		return mergeMessagesBa(res, maybe);
 	}
+	else return maybe;
+}
+
+export function failureIf<T, M, F>(
+	shouldFail:(value:T) => boolean,
+	fail:(value:T) => Failure<F>,
+	maybe:Maybe<T, M>
+) : Maybe<T, M | F> {
+	if (isResult(maybe) && shouldFail(maybe.value)) return mergeMessagesBa(fail(maybe.value), maybe);
+	else return maybe;
+}
+
+export function resultIf<T, R, M>(
+	shouldSucceed:(failure:Failure<M>) => boolean,
+	succeed:(failure:Failure<M>) => Result<R>,
+	maybe:Maybe<T, M>
+) : Maybe<T | R, M> {
+	if (isFailure(maybe) && shouldSucceed(maybe)) return mergeMessagesBa(succeed(maybe), maybe);
 	else return maybe;
 }
 

@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
-import { and, onFailure, onResult, or } from '../../source/flow/async';
-import { Failure, Result, createFailure, createResult } from '../../source/maybe';
+import { and, failureIf, onFailure, onResult, or, resultIf } from '../../source/flow/async';
+import { createFailure, createResult, Failure, Result } from '../../source/maybe';
 import { messageSeverity, resolveMessageValue } from '../../source/message';
 
 
@@ -17,7 +17,7 @@ describe('and', () => {
 				`${ value }bar`,
 				[ f2, f3 ]
 			));
-		const failFn:(value:string) => Promise<Failure<string>> =
+		const failFn:(value:string) => Promise<Failure> =
 			async value => Promise.resolve(createFailure(
 				`${ value }baz`,
 				messageSeverity.fatal,
@@ -51,12 +51,12 @@ describe('or', () => {
 		const f3 = createFailure('f3');
 		const f = createFailure('foo', messageSeverity.warn, [ f0, f1 ]);
 
-		const resFn:(value:Failure<string>) => Promise<Result<string>> =
+		const resFn:(value:Failure) => Promise<Result<string>> =
 			async value => Promise.resolve(createResult(
 				`${ String(resolveMessageValue(value)) }bar`,
 				[ f2, f3 ]
 			));
-		const failFn:(value:Failure<string>) => Promise<Failure<string>> =
+		const failFn:(value:Failure) => Promise<Failure> =
 			async value => Promise.resolve(createFailure(
 				`${ String(resolveMessageValue(value)) }baz`,
 				messageSeverity.fatal,
@@ -79,6 +79,46 @@ describe('or', () => {
 			await or(failFn, f),
 			createFailure('foobaz', messageSeverity.fatal, [ f, f2, f3 ])
 		);
+	});
+});
+
+describe('failureIf', () => {
+	it('should create a Failure from a Result', async () => {
+		const f0 = createFailure('f0');
+		const f1 = createFailure('f1');
+		const f2 = createFailure('f2', messageSeverity.warn, [ f0, f1 ]);
+		const r1 = createResult('r1', [ f1, f0 ]);
+
+		const cond = (value:string) => value === 'r0';
+		const create = (value:string) => createFailure(`f3-${ value }`);
+
+		assert.strictEqual(await failureIf(cond, create, Promise.resolve(f2)), f2);
+		assert.deepStrictEqual(await failureIf(cond, create, Promise.resolve(createResult('r0', [ f1, f0 ]))), {
+			text : 'f3-r0',
+			severity : messageSeverity.error,
+			messages : [ f1, f0 ]
+		});
+		assert.strictEqual(await failureIf(cond, create, Promise.resolve(r1)), r1);
+	});
+});
+
+describe('resultIf', () => {
+	it('should create a Result from a Failure', async () => {
+		const f0 = createFailure('f0');
+		const f1 = createFailure('f1');
+		const f2 = createFailure('f2', messageSeverity.warn, [ f0, f1 ]);
+		const f3 = createFailure('f3', messageSeverity.warn, [ f2 ]);
+		const r1 = createResult('r1', [ f1, f0 ]);
+
+		const cond = (failure:Failure) => resolveMessageValue(failure) !== 'f2';
+		const create = (failure:Failure) => createResult(`r-${ resolveMessageValue(failure) }`);
+
+		assert.strictEqual(await resultIf(cond, create, Promise.resolve(f2)), f2);
+		assert.deepStrictEqual(await resultIf(cond, create, Promise.resolve(f3)), {
+			value : 'r-f3',
+			messages : [ f3 ]
+		});
+		assert.strictEqual(await resultIf(cond, create, Promise.resolve(r1)), r1);
 	});
 });
 
