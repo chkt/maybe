@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
 import { and, failureIf, onFailure, onResult, or, resultIf } from '../../source/flow/async';
-import { createFailure, createResult, Failure, Result } from '../../source/maybe';
+import { Failure, Result, createFailure, createResult } from '../../source/maybe';
 import { messageSeverity, resolveMessageValue } from '../../source/message';
 
 
@@ -89,8 +89,8 @@ describe('failureIf', () => {
 		const f2 = createFailure('f2', messageSeverity.warn, [ f0, f1 ]);
 		const r1 = createResult('r1', [ f1, f0 ]);
 
-		const cond = (value:string) => value === 'r0';
-		const create = (value:string) => createFailure(`f3-${ value }`);
+		const cond = (value:string) : boolean => value === 'r0';
+		const create = (value:string) : Failure<string> => createFailure(`f3-${ value }`);
 
 		assert.strictEqual(await failureIf(cond, create, Promise.resolve(f2)), f2);
 		assert.deepStrictEqual(await failureIf(cond, create, Promise.resolve(createResult('r0', [ f1, f0 ]))), {
@@ -110,8 +110,8 @@ describe('resultIf', () => {
 		const f3 = createFailure('f3', messageSeverity.warn, [ f2 ]);
 		const r1 = createResult('r1', [ f1, f0 ]);
 
-		const cond = (failure:Failure) => resolveMessageValue(failure) !== 'f2';
-		const create = (failure:Failure) => createResult(`r-${ resolveMessageValue(failure) }`);
+		const cond = (failure:Failure) : boolean => resolveMessageValue(failure) !== 'f2';
+		const create = (failure:Failure) : Result<string> => createResult(`r-${ resolveMessageValue(failure) as string }`);
 
 		assert.strictEqual(await resultIf(cond, create, Promise.resolve(f2)), f2);
 		assert.deepStrictEqual(await resultIf(cond, create, Promise.resolve(f3)), {
