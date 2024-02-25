@@ -4,6 +4,8 @@ export {
 	ErrorMessage,
 	CardinalMessage,
 	TextMessage,
+	DataRecord,
+	DataValue,
 	DataMessage,
 	Message,
 	Messages,
@@ -31,6 +33,7 @@ export {
 	createFailure
 } from './maybe';
 export {
+	filterAll,
 	maybeFrom,
 	maybeAsync,
 	resultFrom,
@@ -42,13 +45,18 @@ export {
 	all,
 	allAsync,
 	may,
-	resolve
+	resolve,
+	blank
 } from './convert';
 export {
 	and,
 	andAsync,
 	or,
 	orAsync,
+	resultIf,
+	resultIfAsync,
+	failureIf,
+	failureIfAsync,
 	onResult,
 	onResultAsync,
 	onFailure,

@@ -75,6 +75,7 @@ describe('result api', () => {
 
 describe('native api', () => {
 	it('should contain exposed methods', () => {
+		assert.strictEqual(root.filterAll, native.filterAll);
 		assert.strictEqual(root.maybeFrom, native.maybeFrom);
 		assert.strictEqual(root.maybeAsync, native.maybeAsync);
 		assert.strictEqual(root.resultFrom, native.resultFrom);
@@ -90,6 +91,7 @@ describe('conversion api', () => {
 		assert.strictEqual(root.allAsync, convert.allAsync);
 		assert.strictEqual(root.may, convert.may);
 		assert.strictEqual(root.resolve, convert.resolve);
+		assert.strictEqual(root.blank, convert.blank);
 	});
 });
 
@@ -99,6 +101,10 @@ describe('flow api', () => {
 		assert.strictEqual(root.andAsync, flow.andAsync);
 		assert.strictEqual(root.or, flow.or);
 		assert.strictEqual(root.orAsync, flow.orAsync);
+		assert.strictEqual(root.resultIf, flow.resultIf);
+		assert.strictEqual(root.resultIfAsync, flow.resultIfAsync);
+		assert.strictEqual(root.failureIf, flow.failureIf);
+		assert.strictEqual(root.failureIfAsync, flow.failureIfAsync);
 		assert.strictEqual(root.onResult, flow.onResult);
 		assert.strictEqual(root.onResultAsync, flow.onResultAsync);
 		assert.strictEqual(root.onFailure, flow.onFailure);
