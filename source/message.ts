@@ -30,7 +30,9 @@ export interface TextMessage extends MessageCommon {
 	readonly text : string;
 }
 
-export type DataRecord = Readonly<Record<string | symbol, unknown>>;
+export type DataRecord = object;
+
+type NullRecord = Readonly<Record<never, never>>;
 
 export interface DataValue<T> {
 	readonly value : T;
@@ -46,7 +48,7 @@ export type Message<T = unknown> =
 	ErrorMessage<T extends Error ? T : Error> |
 	CardinalMessage |
 	TextMessage |
-	DataMessage<T extends DataRecord ? T : DataRecord> |
+	DataMessage<T extends DataRecord ? T : NullRecord> |
 	DataMessage<DataValue<T>>;
 
 type MessageDistinct<T> =
@@ -83,7 +85,7 @@ export function isTextMessage<T>(message:Message<T>) : message is TextMessage {
 }
 
 export function isDataMessage<T>(message:Message<T>) : message is DataMessage<
-	T extends DataRecord ? T : DataRecord> |
+	T extends DataRecord ? T : NullRecord> |
 	DataMessage<DataValue<T>
 > {
 	return 'data' in message;
