@@ -2,7 +2,7 @@ import { Failure, Maybe, Result, createFailure, createResult } from '../maybe';
 import { filter, filterAll } from './common';
 
 
-export function maybeFrom<T, R>(fn:(v:T) => R, isResult:filter<R> = filterAll, value?:T) : Maybe<R, R> {
+export function maybeFrom<T, R>(fn:(v:T) => R, isResult:filter<R> = filterAll, value?:T) : Maybe<R, Failure<R>> {
 	const res = fn(value as T);
 
 	if (isResult(res)) return createResult(res);

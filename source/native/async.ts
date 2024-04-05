@@ -2,11 +2,11 @@ import { Failure, Maybe, createFailure, createResult } from '../maybe';
 import { filter, filterAll } from './common';
 
 
-export async function maybeFrom<T, R, F>(
+export async function maybeFrom<T, R, F extends Failure>(
 	fn:(v:T) => Promise<R>,
 	isResult:filter<R> = filterAll,
 	value?:T
-) : Promise<Maybe<R, R | F>> {
+) : Promise<Maybe<R, Failure<R> | F>> {
 	try {
 		const res = await fn(value as T);
 
@@ -14,7 +14,7 @@ export async function maybeFrom<T, R, F>(
 		else return createFailure(res) as Failure<R>;
 	}
 	catch (err) {
-		return createFailure(err) as Failure<F>;
+		return createFailure(err) as F;
 	}
 }
 

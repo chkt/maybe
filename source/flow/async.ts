@@ -9,7 +9,7 @@ import {
 } from '../maybe';
 
 
-export async function and<T, R, M, F>(
+export async function and<T, R, M extends Failure, F extends Failure>(
 	fn:(value:T) => Promise<Maybe<R, F>>,
 	maybe:Maybe<T, M>
 ) : Promise<Maybe<R, M | F>> {
@@ -21,8 +21,8 @@ export async function and<T, R, M, F>(
 	else return maybe;
 }
 
-export async function or<T, R, M, F>(
-	fn:(failure:Failure<M>) => Promise<Maybe<R, F>>,
+export async function or<T, R, M extends Failure, F extends Failure>(
+	fn:(failure:M) => Promise<Maybe<R, F>>,
 	maybe:Maybe<T, M>
 ) : Promise<Maybe<T | R, F>> {
 	if (isFailure(maybe)) {
@@ -33,9 +33,9 @@ export async function or<T, R, M, F>(
 	else return maybe;
 }
 
-export async function failureIf<T, M, F>(
+export async function failureIf<T, M extends Failure, F extends Failure>(
 	shouldFail:(value:T) => boolean,
-	fail:(value:T) => Failure<F>,
+	fail:(value:T) => F,
 	maybe:Promise<Maybe<T, M>>
 ) : Promise<Maybe<T, M | F>> {
 	const resolved = await maybe;
@@ -44,9 +44,9 @@ export async function failureIf<T, M, F>(
 	else return resolved;
 }
 
-export async function resultIf<T, R, M>(
-	shouldSucceed:(failure:Failure<M>) => boolean,
-	succeed:(failure:Failure<M>) => Result<R>,
+export async function resultIf<T, R, M extends Failure>(
+	shouldSucceed:(failure:M) => boolean,
+	succeed:(failure:M) => Result<R>,
 	maybe:Promise<Maybe<T, M>>
 ) : Promise<Maybe<T | R, M>> {
 	const resolved = await maybe;
@@ -55,7 +55,7 @@ export async function resultIf<T, R, M>(
 	else return resolved;
 }
 
-export async function onResult<T, F>(
+export async function onResult<T, F extends Failure>(
 	fn:(value:T) => Promise<Maybe<unknown>>,
 	maybe:Maybe<T, F>
 ) : Promise<Maybe<T, F>> {
@@ -67,8 +67,8 @@ export async function onResult<T, F>(
 	else return maybe;
 }
 
-export async function onFailure<T, F>(
-	fn:(failure:Failure<F>) => Promise<Maybe<unknown>>,
+export async function onFailure<T, F extends Failure>(
+	fn:(failure:F) => Promise<Maybe<unknown>>,
 	maybe:Maybe<T, F>
 ) : Promise<Maybe<T, F>> {
 	if (isFailure(maybe)) {

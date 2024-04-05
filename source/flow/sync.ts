@@ -9,7 +9,7 @@ import {
 } from '../maybe';
 
 
-export function and<T, R, M, F>(
+export function and<T, R, M extends Failure, F extends Failure>(
 	fn:(value:T) => Maybe<R, F>,
 	maybe:Maybe<T, M>
 ) : Maybe<R, M | F> {
@@ -21,8 +21,8 @@ export function and<T, R, M, F>(
 	else return maybe;
 }
 
-export function or<T, R, M, F>(
-	fn:(value:Failure<M>) => Maybe<R, F>,
+export function or<T, R, M extends Failure, F extends Failure>(
+	fn:(value:M) => Maybe<R, F>,
 	maybe:Maybe<T, M>
 ) : Maybe<T | R, F> {
 	if (isFailure(maybe)) {
@@ -33,25 +33,25 @@ export function or<T, R, M, F>(
 	else return maybe;
 }
 
-export function failureIf<T, M, F>(
+export function failureIf<T, M extends Failure, F extends Failure>(
 	shouldFail:(value:T) => boolean,
-	fail:(value:T) => Failure<F>,
+	fail:(value:T) => F,
 	maybe:Maybe<T, M>
 ) : Maybe<T, M | F> {
 	if (isResult(maybe) && shouldFail(maybe.value)) return mergeMessagesBa(fail(maybe.value), maybe);
 	else return maybe;
 }
 
-export function resultIf<T, R, M>(
-	shouldSucceed:(failure:Failure<M>) => boolean,
-	succeed:(failure:Failure<M>) => Result<R>,
+export function resultIf<T, R, M extends Failure>(
+	shouldSucceed:(failure:M) => boolean,
+	succeed:(failure:M) => Result<R>,
 	maybe:Maybe<T, M>
 ) : Maybe<T | R, M> {
 	if (isFailure(maybe) && shouldSucceed(maybe)) return mergeMessagesBa(succeed(maybe), maybe);
 	else return maybe;
 }
 
-export function onResult<T, F>(
+export function onResult<T, F extends Failure>(
 	fn:(value:T) => Maybe<unknown>,
 	maybe:Maybe<T, F>
 ) : Maybe<T, F> {
@@ -63,8 +63,8 @@ export function onResult<T, F>(
 	else return maybe;
 }
 
-export function onFailure<T, F>(
-	fn:(failure:Failure<F>) => Maybe<unknown>,
+export function onFailure<T, F extends Failure>(
+	fn:(failure:F) => Maybe<unknown>,
 	maybe:Maybe<T, F>
 ) : Maybe<T, F> {
 	if (isFailure(maybe)) {

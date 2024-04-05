@@ -18,7 +18,7 @@ interface MessageCommon extends MessageComposite {
 	readonly severity : MessageSeverity;
 }
 
-export interface ErrorMessage<T extends Error> extends MessageCommon {
+export interface ErrorMessage<T extends Error = Error> extends MessageCommon {
 	readonly error : T;
 }
 
@@ -30,7 +30,8 @@ export interface TextMessage extends MessageCommon {
 	readonly text : string;
 }
 
-export type DataRecord = object;
+// TODO Exclude<object, Error | unknown[]> is the same as object
+export type DataRecord = Exclude<object, Error | unknown[]>;
 
 type NullRecord = Readonly<Record<never, never>>;
 
@@ -38,11 +39,11 @@ export interface DataValue<T> {
 	readonly value : T;
 }
 
+type DataDistinct<T> = T extends DataRecord ? T : DataValue<T>;
+
 export interface DataMessage<T> extends MessageCommon {
 	readonly data : T;
 }
-
-type DataMessageDistinct<T> = T extends DataRecord ? DataMessage<T> : DataMessage<DataValue<T>>;
 
 export type Message<T = unknown> =
 	ErrorMessage<T extends Error ? T : Error> |
@@ -53,14 +54,12 @@ export type Message<T = unknown> =
 
 type MessageDistinct<T> =
 	T extends number ?
-		CardinalMessage | DataMessage<DataValue<T>> :
+		CardinalMessage | DataMessage<T> :
 		T extends string ?
 			TextMessage :
 			T extends Error ?
 				ErrorMessage<T> :
-				T extends DataRecord ?
-					DataMessage<T> :
-					DataMessage<DataValue<T>>;
+				DataMessage<DataDistinct<T>>;
 
 export type Messages = readonly Message[];
 
@@ -84,13 +83,9 @@ export function isTextMessage<T>(message:Message<T>) : message is TextMessage {
 	return 'text' in message;
 }
 
-export function isDataMessage<T>(message:Message<T>) : message is DataMessage<
-	T extends DataRecord ? T : NullRecord> |
-	DataMessage<DataValue<T>
-> {
+export function isDataMessage<T>(message:Message<T>) : message is DataMessage<DataDistinct<T>> {
 	return 'data' in message;
 }
-
 
 export function createErrorMessage<T extends Error>(
 	error:T,
@@ -120,9 +115,9 @@ export function createDataMessage<T>(
 	data:T,
 	severity:MessageSeverity = messageSeverity.error,
 	messages:Messages = []
-) : DataMessageDistinct<T> {
-	if (isDataRecord(data)) return { data, severity, messages } as DataMessageDistinct<T>;
-	else return { data : { value : data }, severity, messages } as DataMessageDistinct<T>;
+) : DataMessage<DataDistinct<T>> {
+	if (isDataRecord(data)) return { data, severity, messages } as DataMessage<DataDistinct<T>>;
+	else return { data : { value : data }, severity, messages } as DataMessage<DataDistinct<T>>;
 }
 
 export function createMessage<T>(
@@ -139,7 +134,7 @@ export function createMessage<T>(
 		case 'string' : return createTextMessage(value, severity, messages) as MessageDistinct<T>;
 		case 'object' :
 			if (value instanceof Error) return createErrorMessage(value, severity, messages) as MessageDistinct<T>;
-			else return createDataMessage(value, severity, messages) as MessageDistinct<T>;
+			else if (isDataRecord(value)) return createDataMessage(value, severity, messages) as MessageDistinct<T>;
 		// no default
 	}
 

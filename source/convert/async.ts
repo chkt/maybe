@@ -16,13 +16,13 @@ export async function resolve<T, R>(fn:(v:T) => Maybe<Promise<R>>, value:T) : Pr
 	else return maybe;
 }
 
-export async function all<T, R, F>(
+export async function all<T, R, F extends Failure>(
 	fn:(value:T) => Promise<Maybe<R, F>>,
 	values:readonly T[]
 ) : Promise<Maybe<R[], F>> {
 	const res:R[] = [];
 	let messages:MessageComposite = { messages : [] };
-	let failure:Failure<F> | undefined;
+	let failure:F | undefined;
 
 	for (const maybe of await Promise.all(values.map(fn))) {
 		if (isResult(maybe)) res.push(maybe.value);
