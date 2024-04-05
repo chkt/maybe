@@ -1,7 +1,7 @@
 {
 	"name": "@chkt/maybe",
 	"description": "Minimalistic application flow handling",
-	"version": "1.0.0-beta.7",
+	"version": "1.0.0-beta.8",
 	"license": "MIT",
 	"keywords": [
 		"Failure",
@@ -37,15 +37,15 @@
 	"devDependencies": {
 		"@chkt/eslint-config": "^1.0.8",
 		"@types/mocha": "^10.0",
-		"@types/node": "^20.11",
-		"@typescript-eslint/eslint-plugin": "^7.0",
-		"@typescript-eslint/parser": "^7.0",
+		"@types/node": "^20.12",
+		"@typescript-eslint/eslint-plugin": "^7.5",
+		"@typescript-eslint/parser": "^7.5",
 		"eslint": "^8.57",
-		"mocha": "^10.3",
+		"mocha": "^10.4",
 		"nyc": "15.1",
 		"ts-node": "^10.9",
 		"typedoc": "^0.25",
-		"typescript": "^5.3"
+		"typescript": "^5.4"
 	},
 	"dependencies": {}
 }
