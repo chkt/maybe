@@ -13,7 +13,7 @@ import * as native from '../source/native';
 describe('message api', () => {
 	it('should contain exposed interfaces', () => {
 		const a:root.MessageSeverity = 0;
-		const b:root.ErrorMessage<Error> = { severity : 0, error : new Error(), messages : [] };
+		const b:root.ErrorMessage = { severity : 0, error : new Error(), messages : [] };
 		const c:root.CardinalMessage = { severity : 0, code : 1, messages : [] };
 		const d:root.TextMessage = { severity : 0, text : 'foo', messages : [] };
 		const e:root.DataMessage<{ foo : number }> = { severity : 0, data : { foo : 1 }, messages : [] };
@@ -24,7 +24,7 @@ describe('message api', () => {
 		f = e;
 
 		const g:message.MessageSeverity = a;
-		const h:message.ErrorMessage<Error> = b;
+		const h:message.ErrorMessage = b;
 		const i:message.CardinalMessage = c;
 		const j:message.TextMessage = d;
 		const k:message.DataMessage<{ foo : number }> = e;
