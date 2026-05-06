@@ -1,4 +1,4 @@
-import { Message, MessageComposite, Messages, createMessage } from './message';
+import { Message, MessageComposite, Messages, createMessage } from './message.js';
 
 
 export interface Result<T> extends MessageComposite {
@@ -26,6 +26,7 @@ export function createResult<T>(value:T, messages:Messages = []) : Result<T> {
 }
 
 /**
+ * @function
  * @alias of createMessage
  */
 export const createFailure = createMessage;

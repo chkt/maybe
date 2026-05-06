@@ -1,10 +1,16 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
-import { createFailure, createResult, isFailure, isResult, mergeMessagesAb, mergeMessagesBa } from '../source/maybe';
-import { createMessage, messageSeverity } from '../source/message';
+import {
+	createFailure,
+	createResult,
+	isFailure,
+	isResult,
+	mergeMessagesAb,
+	mergeMessagesBa
+} from '../source/maybe.js';
+import { createMessage, messageSeverity } from '../source/message.js';
 
 
-/* eslint-disable @typescript-eslint/no-magic-numbers */
 describe('isResult', () => {
 	it('should return true if a Maybe is a Result', () => {
 		assert.strictEqual(isResult({ value : 1, messages : [] }), true);

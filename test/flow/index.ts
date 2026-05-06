@@ -1,8 +1,8 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
-import * as root from '../../source/flow';
-import * as async from '../../source/flow/async';
-import * as sync from '../../source/flow/sync';
+import * as async from '../../source/flow/async.js';
+import * as root from '../../source/flow/index.js';
+import * as sync from '../../source/flow/sync.js';
 
 
 describe('module', () => {

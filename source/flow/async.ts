@@ -6,7 +6,7 @@ import {
 	isResult,
 	mergeMessagesAb,
 	mergeMessagesBa
-} from '../maybe';
+} from '../maybe.js';
 
 
 export async function and<T, R, M extends Failure, F extends Failure>(

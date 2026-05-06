@@ -1,5 +1,5 @@
-import { Failure, Maybe, createFailure, createResult } from '../maybe';
-import { filter, filterAll } from './common';
+import { Failure, Maybe, createFailure, createResult } from '../maybe.js';
+import { filter, filterAll } from './common.js';
 
 
 export async function maybeFrom<T, R, F extends Failure>(

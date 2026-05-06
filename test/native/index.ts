@@ -1,9 +1,9 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
-import * as root from '../../source/native';
-import * as async from '../../source/native/async';
-import * as common from '../../source/native/common';
-import * as sync from '../../source/native/sync';
+import * as async from '../../source/native/async.js';
+import * as common from '../../source/native/common.js';
+import * as root from '../../source/native/index.js';
+import * as sync from '../../source/native/sync.js';
 
 
 describe('module', () => {

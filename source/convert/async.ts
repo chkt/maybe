@@ -1,5 +1,5 @@
-import { Failure, Maybe, createFailure, createResult, isResult, mergeMessagesAb, mergeMessagesBa } from '../maybe';
-import { MessageComposite } from '../message';
+import { Failure, Maybe, createFailure, createResult, isResult, mergeMessagesAb, mergeMessagesBa } from '../maybe.js';
+import { MessageComposite } from '../message.js';
 
 
 export async function resolve<T, R>(fn:(v:T) => Maybe<Promise<R>>, value:T) : Promise<Maybe<R>> {

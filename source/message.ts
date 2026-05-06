@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export const enum messageSeverity {
 	fatal,
 	error,
@@ -166,6 +167,9 @@ export function containsMessage(parent:MessageComposite, message:Message) : bool
 	return flatten([], parent.messages).includes(message);
 }
 
+/**
+ * @function
+ */
 export const flattenMessages:(messages:Messages) => Messages = flatten.bind(null, []);
 
 export function flattenMessage(message:Message) : Messages {

@@ -1,2 +1,2 @@
-export { may, all, blank } from './sync';
-export { resolve, all as allAsync } from './async';
+export { all, blank, may } from './sync.js';
+export { all as allAsync, resolve } from './async.js';

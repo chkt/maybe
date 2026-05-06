@@ -1,15 +1,15 @@
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
-import * as root from '../source';
-import * as compose from '../source/compose';
-import * as convert from '../source/convert';
-import * as flow from '../source/flow';
-import * as maybe from '../source/maybe';
-import * as message from '../source/message';
-import * as native from '../source/native';
+import * as compose from '../source/compose.js';
+import * as convert from '../source/convert/index.js';
+import * as flow from '../source/flow/index.js';
+import * as root from '../source/index.js';
+import * as maybe from '../source/maybe.js';
+import * as message from '../source/message.js';
+import * as native from '../source/native/index.js';
 
 
-/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-magic-numbers */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 describe('message api', () => {
 	it('should contain exposed interfaces', () => {
 		const a:root.MessageSeverity = 0;
@@ -17,19 +17,19 @@ describe('message api', () => {
 		const c:root.CardinalMessage = { severity : 0, code : 1, messages : [] };
 		const d:root.TextMessage = { severity : 0, text : 'foo', messages : [] };
 		const e:root.DataMessage<{ foo : number }> = { severity : 0, data : { foo : 1 }, messages : [] };
-		let f:root.Message<Error | { foo : number }> = b;
+		let _f:root.Message<Error | { foo : number }> = b;
 
-		f = c;
-		f = d;
-		f = e;
+		_f = c;
+		_f = d;
+		_f = e;
 
-		const g:message.MessageSeverity = a;
-		const h:message.ErrorMessage = b;
-		const i:message.CardinalMessage = c;
-		const j:message.TextMessage = d;
-		const k:message.DataMessage<{ foo : number }> = e;
+		const _g:message.MessageSeverity = a;
+		const _h:message.ErrorMessage = b;
+		const _i:message.CardinalMessage = c;
+		const _j:message.TextMessage = d;
+		const _k:message.DataMessage<{ foo : number }> = e;
 		const l:root.Messages = [{ severity : 0, text : 'foo', messages : [] }];
-		const m:message.Messages = l;
+		const _m:message.Messages = l;
 	});
 
 	it('should contain exposed enums', () => {
@@ -59,10 +59,10 @@ describe('result api', () => {
 		const b:root.Result<{ foo : 1 }> = { value : { foo : 1 }, messages : [] };
 		const c:root.Maybe<{ foo : 1 }> = { value : { foo : 1 }, messages : [] };
 		const d:root.Maybe<{ foo : 1 }> = { text : 'foo', severity : message.messageSeverity.warn, messages : [] };
-		const e:maybe.Failure<Error> = a;
-		const f:maybe.Result<{ foo : 1 }> = b;
-		const g:maybe.Maybe<{ foo : 1 }> = c;
-		const h:maybe.Maybe<{ foo : 1 }> = d;
+		const _e:maybe.Failure<Error> = a;
+		const _f:maybe.Result<{ foo : 1 }> = b;
+		const _g:maybe.Maybe<{ foo : 1 }> = c;
+		const _h:maybe.Maybe<{ foo : 1 }> = d;
 	});
 
 	it('should contain exposed methods', () => {

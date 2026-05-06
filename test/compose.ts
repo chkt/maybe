@@ -1,6 +1,6 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
-import { apply } from '../source/compose';
+import { apply } from '../source/compose.js';
 
 
 describe('apply', () => {

@@ -1,8 +1,8 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
-import * as root from '../../source/convert';
-import * as async from '../../source/convert/async';
-import * as sync from '../../source/convert/sync';
+import * as async from '../../source/convert/async.js';
+import * as root from '../../source/convert/index.js';
+import * as sync from '../../source/convert/sync.js';
 
 
 describe('module', () => {

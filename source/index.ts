@@ -1,65 +1,65 @@
 export {
-	MessageSeverity,
-	messageSeverity,
-	ErrorMessage,
 	CardinalMessage,
-	TextMessage,
+	DataMessage,
 	DataRecord,
 	DataValue,
-	DataMessage,
+	ErrorMessage,
 	Message,
+	MessageSeverity,
 	Messages,
-	isErrorMessage,
-	isCardinalMessage,
-	isTextMessage,
-	isDataMessage,
-	createErrorMessage,
-	createCardinalMessage,
-	createTextMessage,
-	createDataMessage,
-	createMessage,
-	resolveMessageValue,
+	TextMessage,
 	containsMessage,
+	createCardinalMessage,
+	createDataMessage,
+	createErrorMessage,
+	createMessage,
+	createTextMessage,
 	flattenMessage,
-	flattenMessages
-} from './message';
+	flattenMessages,
+	isCardinalMessage,
+	isDataMessage,
+	isErrorMessage,
+	isTextMessage,
+	messageSeverity,
+	resolveMessageValue
+} from './message.js';
 export {
-	Result,
 	Failure,
 	Maybe,
-	isResult,
-	isFailure,
+	Result,
+	createFailure,
 	createResult,
-	createFailure
-} from './maybe';
+	isFailure,
+	isResult
+} from './maybe.js';
 export {
-	filterAll,
-	maybeFrom,
-	maybeAsync,
-	resultFrom,
-	resultAsync,
+	failureAsync,
 	failureFrom,
-	failureAsync
-} from './native';
+	filterAll,
+	maybeAsync,
+	maybeFrom,
+	resultAsync,
+	resultFrom
+} from './native/index.js';
 export {
 	all,
 	allAsync,
+	blank,
 	may,
-	resolve,
-	blank
-} from './convert';
+	resolve
+} from './convert/index.js';
 export {
 	and,
 	andAsync,
+	failureIf,
+	failureIfAsync,
+	onFailure,
+	onFailureAsync,
+	onResult,
+	onResultAsync,
 	or,
 	orAsync,
 	resultIf,
-	resultIfAsync,
-	failureIf,
-	failureIfAsync,
-	onResult,
-	onResultAsync,
-	onFailure,
-	onFailureAsync
-} from './flow';
-export { apply } from './compose';
+	resultIfAsync
+} from './flow/index.js';
+export { apply } from './compose.js';

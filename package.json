@@ -19,6 +19,7 @@
 	"repository": {
 		"url": "https://github.com/chkt/maybe"
 	},
+	"type": "module",
 	"engines": {
 		"node": ">=16.0"
 	},
@@ -27,25 +28,25 @@
 		"./dist/"
 	],
 	"scripts": {
-		"prepublishOnly": "yarn outdated && yarn test && yarn lint && yarn build && yarn doc",
-		"lint": "yarn eslint source/*.ts source/**/*.ts test/*.ts test/**/*.ts",
-		"test": "yarn mocha -r ts-node/register test/*.ts test/**/*.ts",
-		"coverage": "nyc yarn test",
-		"doc": "yarn typedoc --plugin ../../chkt/typedoc-theme-md --theme md --readme ./module.md --out ./.docs source/*.ts source/**/*.ts && cp ./.docs/modules.md ./readme.md",
-		"build": "rm -rf ./dist/* && yarn tsc"
+		"prepublishOnly": "npm outdated && npm test && npm run lint && npm build && npm run doc",
+		"lint" : "eslint 'source/**/*.ts' 'test/**/*.ts'",
+		"test" : "NODE_OPTIONS='--loader ts-node/esm' mocha -r ts-node/register 'test/**/*.ts'",
+		"coverage" : "NODE_OPTIONS='--loader ts-node/esm' c8 --reporter html --reporter text mocha -r ts-node/register 'test/**/*.ts'",
+		"doc": "typedoc --plugin ../../chkt/typedoc-theme-md/dist/index.js --theme md --readme ./module.md --out readme.md source/*.ts source/**/*.ts && cp ./.docs/modules.md ./readme.md",
+		"build": "rm -rf ./dist/* && tsc -p tsconfig.build.json"
 	},
+	"dependencies": {},
 	"devDependencies": {
-		"@chkt/eslint-config": "^1.0.8",
+		"@chkt/eslint-config": "^1.1.0",
+		"@eslint/js" : "^9.39",
 		"@types/mocha": "^10.0",
-		"@types/node": "^20.12",
-		"@typescript-eslint/eslint-plugin": "^7.5",
-		"@typescript-eslint/parser": "^7.5",
-		"eslint": "^8.57",
-		"mocha": "^10.4",
-		"nyc": "15.1",
+		"@types/node": "^25.6",
+		"c8": "^11.0",
+		"eslint-plugin-import": "^2.32",
+		"mocha": "^11.7",
 		"ts-node": "^10.9",
-		"typedoc": "^0.25",
-		"typescript": "^5.4"
-	},
-	"dependencies": {}
+		"typedoc": "^0.28",
+		"typescript": "^5.9",
+		"typescript-eslint" : "^8.55"
+	}
 }

@@ -1,9 +1,9 @@
-export { and, or, resultIf, failureIf, onResult, onFailure } from './sync';
+export { and, failureIf, onFailure, onResult, or, resultIf } from './sync.js';
 export {
 	and as andAsync,
-	or as orAsync,
-	resultIf as resultIfAsync,
 	failureIf as failureIfAsync,
+	onFailure as onFailureAsync,
 	onResult as onResultAsync,
-	onFailure as onFailureAsync
-} from './async';
+	or as orAsync,
+	resultIf as resultIfAsync
+} from './async.js';

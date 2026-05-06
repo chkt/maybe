@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
-import { createFailure, createResult } from '../../source/maybe';
-import { failureFrom, maybeFrom, resultFrom } from '../../source/native/async';
+import { createFailure, createResult } from '../../source/maybe.js';
+import { failureFrom, maybeFrom, resultFrom } from '../../source/native/async.js';
 
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */

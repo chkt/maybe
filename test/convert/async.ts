@@ -1,8 +1,8 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
-import { all, resolve } from '../../source/convert/async';
-import { Maybe, createFailure, createResult } from '../../source/maybe';
-import { messageSeverity } from '../../source/message';
+import { all, resolve } from '../../source/convert/async.js';
+import { Maybe, createFailure, createResult } from '../../source/maybe.js';
+import { messageSeverity } from '../../source/message.js';
 
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
@@ -43,7 +43,7 @@ describe('all', () => {
 			messages : f
 		});
 		assert.deepStrictEqual(await all(
-			async (v) : Promise<Maybe<number>> => v % 2 ?
+			async (v) : Promise<Maybe<number>> => v % 2 !== 0 ?
 				createResult(v, [ f[v] ]) :
 				createFailure(v, messageSeverity.warn, [ f[v] ]),
 			[ 0, 1, 2, 3 ]

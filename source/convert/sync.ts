@@ -1,5 +1,5 @@
-import { Failure, Maybe, createFailure, createResult, isResult, mergeMessagesAb } from '../maybe';
-import { MessageComposite } from '../message';
+import { Failure, Maybe, createFailure, createResult, isResult, mergeMessagesAb } from '../maybe.js';
+import { MessageComposite } from '../message.js';
 
 
 export function may<T, R>(fn:(v:T) => Maybe<R>, value:T) : Maybe<R> {

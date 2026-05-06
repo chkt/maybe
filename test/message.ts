@@ -19,12 +19,10 @@ import {
 	mergeCompositeBa,
 	messageSeverity,
 	resolveMessageValue
-} from '../source/message';
+} from '../source/message.js';
 
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-
-
 describe('isErrorMessage', () => {
 	it('should return true if message is an ErrorMessage', () => {
 		assert.strictEqual(isErrorMessage({

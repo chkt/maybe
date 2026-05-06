@@ -1,18 +1,25 @@
 {
-	"include" : [ "./source/**/*", ],
+	"include" : [ "./source/**/*.ts", "./test/**/*.ts" ],
 	"compilerOptions": {
 		"baseUrl": ".",
 		"outDir": "./dist",
 
-		"target": "es2015",
+		"target": "es2020",
 		"lib" : [],
-		"module": "commonjs",
+
+		"module": "nodenext",
+		"moduleResolution" : "nodenext",
+		"allowImportingTsExtensions" : false,
+
 		"newLine": "LF",
 
 		"sourceMap": false,
 		"declaration": true,
 
 		"strict": true,
+		"noImplicitReturns": true,
+		"noPropertyAccessFromIndexSignature": true,
+
 		"removeComments": true
 	}
 }

@@ -1,5 +1,5 @@
-import { Failure, Maybe, Result, createFailure, createResult } from '../maybe';
-import { filter, filterAll } from './common';
+import { Failure, Maybe, Result, createFailure, createResult } from '../maybe.js';
+import { filter, filterAll } from './common.js';
 
 
 export function maybeFrom<T, R>(fn:(v:T) => R, isResult:filter<R> = filterAll, value?:T) : Maybe<R, Failure<R>> {

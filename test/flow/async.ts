@@ -1,8 +1,8 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
-import { and, failureIf, onFailure, onResult, or, resultIf } from '../../source/flow/async';
-import { Failure, Result, createFailure, createResult } from '../../source/maybe';
-import { messageSeverity, resolveMessageValue } from '../../source/message';
+import { and, failureIf, onFailure, onResult, or, resultIf } from '../../source/flow/async.js';
+import { Failure, Result, createFailure, createResult } from '../../source/maybe.js';
+import { messageSeverity, resolveMessageValue } from '../../source/message.js';
 
 
 describe('and', () => {
