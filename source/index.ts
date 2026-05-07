@@ -44,8 +44,11 @@ export {
 export {
 	all,
 	allAsync,
+	any,
+	anyAsync,
 	blank,
 	may,
+	mayAsync,
 	resolve
 } from './convert/index.js';
 export {

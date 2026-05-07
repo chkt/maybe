@@ -1,7 +1,7 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
-import { all, blank, may } from '../../source/convert/sync.js';
-import { Maybe, createFailure, createResult } from '../../source/maybe.js';
+import { all, any, blank, may } from '../../source/convert/sync.js';
+import { createFailure, createResult } from '../../source/maybe.js';
 import { messageSeverity } from '../../source/message.js';
 
 
@@ -44,19 +44,21 @@ describe('all', () => {
 			createFailure('f3')
 		];
 
-		assert.deepStrictEqual(all(
-			v => createResult(v, [ f[v] ]),
-			[ 0, 1, 2, 3 ]
-		), {
+		assert.deepStrictEqual(all([
+			createResult(0, [ f[0] ]),
+			createResult(1, [ f[1] ]),
+			createResult(2, [ f[2] ]),
+			createResult(3, [ f[3] ])
+		]), {
 			value : [ 0, 1, 2, 3 ],
 			messages : f
 		});
-		assert.deepStrictEqual(all(
-			(v) : Maybe<number> => v % 2 !== 0 ?
-				createResult(v, [ f[v] ]) :
-				createFailure(v, messageSeverity.warn, [ f[v] ]),
-			[ 0, 1, 2, 3 ]
-		), {
+		assert.deepStrictEqual(all([
+			createFailure(0, messageSeverity.warn, [ f[0] ]),
+			createResult(1, [ f[1] ]),
+			createFailure(2, messageSeverity.warn, [ f[2] ]),
+			createResult(3, [ f[3] ]),
+		]), {
 			code : 0,
 			severity : messageSeverity.warn,
 			messages : [
@@ -73,6 +75,62 @@ describe('all', () => {
 				},
 				f[3]
 			]
+		});
+	});
+});
+
+describe('any', () => {
+	it('should process an array of values', () => {
+		const f = [
+			createFailure('f0', messageSeverity.warn, [ createFailure('f00') ]),
+			createFailure('f1'),
+			createFailure('f2'),
+			createFailure('f3')
+		];
+
+		assert.deepStrictEqual(any([
+			createResult(0, [ f[0] ]),
+			createResult(1, [ f[1] ]),
+			createResult(2, [ f[2] ]),
+			createResult(3, [ f[3] ])
+		]), {
+			value : 0,
+			messages : [ f[0] ]
+		});
+		assert.deepStrictEqual(any([
+			createFailure(0, messageSeverity.warn, [ f[0] ]),
+			createFailure(1, messageSeverity.warn, [ f[1] ]),
+			createFailure(2, messageSeverity.warn, [ f[2] ]),
+			createResult(3, [ f[3] ])
+		]), {
+			value : 3,
+			messages : [ f[3] ]
+		});
+		assert.deepStrictEqual(any([
+			createFailure(0, messageSeverity.warn, [ f[0] ]),
+			createFailure(1, messageSeverity.warn, [ f[1] ]),
+			createFailure(2, messageSeverity.warn, [ f[2] ]),
+			createFailure(3, messageSeverity.warn, [ f[3] ])
+		]), {
+			text : 'no result',
+			severity : messageSeverity.error,
+			messages : [{
+				code : 0,
+				severity : messageSeverity.warn,
+				messages : [ f[0] ]
+			}, {
+				code : 1,
+				severity : messageSeverity.warn,
+				messages : [ f[1] ]
+			}, {
+				code : 2,
+				severity : messageSeverity.warn,
+				messages : [ f[2] ]
+			}, {
+				code : 3,
+				severity : messageSeverity.warn,
+				messages : [ f[3] ]
+			}]
 		});
 	});
 });

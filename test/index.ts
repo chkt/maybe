@@ -89,7 +89,10 @@ describe('conversion api', () => {
 	it('should contain exposed methods', () => {
 		assert.strictEqual(root.all, convert.all);
 		assert.strictEqual(root.allAsync, convert.allAsync);
+		assert.strictEqual(root.any, convert.any);
+		assert.strictEqual(root.anyAsync, convert.anyAsync);
 		assert.strictEqual(root.may, convert.may);
+		assert.strictEqual(root.mayAsync, convert.mayAsync);
 		assert.strictEqual(root.resolve, convert.resolve);
 		assert.strictEqual(root.blank, convert.blank);
 	});
