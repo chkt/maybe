@@ -49,13 +49,13 @@ export async function all<
 export async function any<
 	T extends unknown[],
 	F extends Failure
->(values:{ readonly [P in keyof T] : Promise<Maybe<T[P], F>> }) : Promise<Maybe<T[keyof T]>> {
+>(values:{ readonly [P in keyof T] : Promise<Maybe<T[P], F>> }) : Promise<Maybe<T[number]>> {
 	const messages:Failure[] = [];
 
 	const resolved = await Promise.all(values.map(async promise => may(async v => v, promise)));
 
 	for (const value of resolved) {
-		if (isResult(value)) return value as Maybe<T[keyof T], F>;
+		if (isResult(value)) return value;
 		else messages.push(value);
 	}
 

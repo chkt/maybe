@@ -1,7 +1,7 @@
 {
 	"name": "@chkt/maybe",
 	"description": "Minimalistic application flow handling",
-	"version": "1.0.0-beta.9",
+	"version": "1.0.0-beta.10",
 	"license": "MIT",
 	"keywords": [
 		"Failure",
@@ -24,16 +24,16 @@
 	"engines": {
 		"node": ">=18.0"
 	},
-	"main": "./dist/index",
+	"main": "./dist/index.js",
 	"files": [
 		"./dist/"
 	],
 	"scripts": {
-		"prepublishOnly": "npm outdated && npm test && npm run lint && npm build && npm run doc",
+		"prepublishOnly": "npm outdated && npm test && npm run lint && npm run build && npm run doc",
 		"lint" : "eslint 'source/**/*.ts' 'test/**/*.ts'",
 		"test" : "NODE_OPTIONS='--loader ts-node/esm' mocha -r ts-node/register 'test/**/*.ts'",
 		"coverage" : "NODE_OPTIONS='--loader ts-node/esm' c8 --reporter html --reporter text mocha -r ts-node/register 'test/**/*.ts'",
-		"doc": "typedoc --plugin ../../chkt/typedoc-theme-md/dist/index.js --theme md --readme ./module.md --out readme.md source/*.ts source/**/*.ts && cp ./.docs/modules.md ./readme.md",
+		"doc": "typedoc --plugin ../../chkt/typedoc-theme-md/dist/index.js --theme md --readme ./module.md --out readme.md source/**/*.ts",
 		"build": "rm -rf ./dist/* && tsc -p tsconfig.build.json"
 	},
 	"dependencies": {},

@@ -30,11 +30,11 @@ export function all<
 	else return createResult(res as T, composite.messages);
 }
 
-export function any<T extends unknown[]>(values:{ readonly [P in keyof T] : Maybe<T[P]> }) : Maybe<T[keyof T]> {
+export function any<T extends unknown[]>(values:{ readonly [P in keyof T] : Maybe<T[P]> }) : Maybe<T[number]> {
 	const messages:Failure[] = [];
 
 	for (const value of values) {
-		if (isResult(value)) return value as Maybe<T[keyof T]>;
+		if (isResult(value)) return value;
 		else messages.push(value);
 	}
 
