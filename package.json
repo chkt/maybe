@@ -33,7 +33,7 @@
 		"lint" : "eslint 'source/**/*.ts' 'test/**/*.ts'",
 		"test" : "NODE_OPTIONS='--loader ts-node/esm' mocha -r ts-node/register 'test/**/*.ts'",
 		"coverage" : "NODE_OPTIONS='--loader ts-node/esm' c8 --reporter html --reporter text mocha -r ts-node/register 'test/**/*.ts'",
-		"doc": "typedoc --plugin ../../chkt/typedoc-theme-md/dist/index.js --theme md --readme ./module.md --out readme.md source/**/*.ts",
+		"doc": "typedoc --plugin ../../chkt/typedoc-theme-md/dist/index.js --theme md --readme ./module.md --out readme.md 'source/**/*.ts'",
 		"build": "rm -rf ./dist/* && tsc -p tsconfig.build.json"
 	},
 	"dependencies": {},
