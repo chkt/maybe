@@ -44,38 +44,27 @@ describe('all', () => {
 			createFailure('f3')
 		];
 
-		assert.deepStrictEqual(all([
-			createResult(0, [ f[0] ]),
-			createResult(1, [ f[1] ]),
-			createResult(2, [ f[2] ]),
-			createResult(3, [ f[3] ])
-		]), {
-			value : [ 0, 1, 2, 3 ],
-			messages : f
-		});
-		assert.deepStrictEqual(all([
-			createFailure(0, messageSeverity.warn, [ f[0] ]),
-			createResult(1, [ f[1] ]),
-			createFailure(2, messageSeverity.warn, [ f[2] ]),
-			createResult(3, [ f[3] ]),
-		]), {
-			code : 0,
-			severity : messageSeverity.warn,
-			messages : [
-				{
-					code : 0,
-					severity : messageSeverity.warn,
-					messages : [ f[0] ]
-				},
-				f[1],
-				{
-					code : 2,
-					severity : messageSeverity.warn,
-					messages : [ f[2] ]
-				},
-				f[3]
-			]
-		});
+		assert.deepStrictEqual(
+			all([
+				createResult(0, [ f[0] ]),
+				createResult(1, [ f[1] ]),
+				createResult(2, [ f[2] ]),
+				createResult(3, [ f[3] ])
+			]),
+			createResult([ 0, 1, 2, 3 ], f)
+		);
+		assert.deepStrictEqual(
+			all([
+				f[0],
+				createResult(1, [ f[1] ]),
+				f[2],
+				createResult(3, [ f[3] ]),
+			]),
+			createFailure({
+				id : 'some failures',
+				failures : [ f[0], f[2] ]
+			}, messageSeverity.error, f)
+		);
 	});
 });
 
@@ -88,50 +77,28 @@ describe('any', () => {
 			createFailure('f3')
 		];
 
-		assert.deepStrictEqual(any([
-			createResult(0, [ f[0] ]),
-			createResult(1, [ f[1] ]),
-			createResult(2, [ f[2] ]),
-			createResult(3, [ f[3] ])
-		]), {
-			value : 0,
-			messages : [ f[0] ]
-		});
-		assert.deepStrictEqual(any([
-			createFailure(0, messageSeverity.warn, [ f[0] ]),
-			createFailure(1, messageSeverity.warn, [ f[1] ]),
-			createFailure(2, messageSeverity.warn, [ f[2] ]),
-			createResult(3, [ f[3] ])
-		]), {
-			value : 3,
-			messages : [ f[3] ]
-		});
-		assert.deepStrictEqual(any([
-			createFailure(0, messageSeverity.warn, [ f[0] ]),
-			createFailure(1, messageSeverity.warn, [ f[1] ]),
-			createFailure(2, messageSeverity.warn, [ f[2] ]),
-			createFailure(3, messageSeverity.warn, [ f[3] ])
-		]), {
-			text : 'no result',
-			severity : messageSeverity.error,
-			messages : [{
-				code : 0,
-				severity : messageSeverity.warn,
-				messages : [ f[0] ]
-			}, {
-				code : 1,
-				severity : messageSeverity.warn,
-				messages : [ f[1] ]
-			}, {
-				code : 2,
-				severity : messageSeverity.warn,
-				messages : [ f[2] ]
-			}, {
-				code : 3,
-				severity : messageSeverity.warn,
-				messages : [ f[3] ]
-			}]
-		});
+		assert.deepStrictEqual(
+			any([
+				createResult(0, [ f[0] ]),
+				createResult(1, [ f[1] ]),
+				createResult(2, [ f[2] ]),
+				createResult(3, [ f[3] ])
+			]),
+			createResult(0, f)
+		);
+		assert.deepStrictEqual(
+			any([
+				f[0],
+				f[1],
+				f[2],
+				createResult(3, [ f[3] ])
+			]),
+			createResult(3, f)
+		);
+		assert.deepStrictEqual(
+			any(f),
+			createFailure({ id : 'no result', failures: f }, messageSeverity.error, f)
+		);
 	});
 });
 

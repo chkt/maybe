@@ -17,7 +17,7 @@ npm install @chkt/maybe
 ```
 
 ## convert
-[`./source/convert/index.ts`](https://github.com/chkt/maybe/blob/a1eafb4acee2d731eef6f996182de8a20a777c9f/source/convert/index.ts#L1)
+[`./source/convert/index.ts`](https://github.com/chkt/maybe/blob/2da1072bf9e0368eca28a08b983a0896243c4fe2/source/convert/index.ts#L1)
 ### References
 ```ts
 export {
@@ -34,25 +34,35 @@ export {
 } from "./sync"
 ```
 ## convert/async
-[`./source/convert/async.ts`](https://github.com/chkt/maybe/blob/a1eafb4acee2d731eef6f996182de8a20a777c9f/source/convert/async.ts#L1)
+[`./source/convert/async.ts`](https://github.com/chkt/maybe/blob/2da1072bf9e0368eca28a08b983a0896243c4fe2/source/convert/async.ts#L1)
 ### Functions
 ```ts
-function all<T extends unknown[], F extends Failure>(values:) : Promise<Maybe<T, F>>;
-function any<T extends unknown[], F extends Failure>(values:) : Promise<Maybe<>>;
+function all<T extends unknown[]>(maybes:) : Promise<Maybe<T, ConversionFailure>>;
+function any<T extends unknown[]>(maybes:) : Promise<Maybe<, ConversionFailure>>;
 function may<T, R>(fn:(v:T) => Promise<Maybe<R>>, value:T) : Promise<Maybe<R>>;
 function resolve<T, R>(fn:(v:T) => Maybe<Promise<R>>, value:T) : Promise<Maybe<R>>;
 ```
-## convert/sync
-[`./source/convert/sync.ts`](https://github.com/chkt/maybe/blob/a1eafb4acee2d731eef6f996182de8a20a777c9f/source/convert/sync.ts#L1)
+## convert/common
+[`./source/convert/common.ts`](https://github.com/chkt/maybe/blob/2da1072bf9e0368eca28a08b983a0896243c4fe2/source/convert/common.ts#L1)
+### Type Aliases
+```ts
+type ConversionFailure = DataMessage<ConversionFailureData>;
+```
 ### Functions
 ```ts
-function all<T extends unknown[], F extends Failure>(value:) : Maybe<T, F>;
-function any<T extends unknown[]>(values:) : Maybe<>;
+function createConversionFailure(id:string, failures:Messages, messages:Messages) : ConversionFailure;
+```
+## convert/sync
+[`./source/convert/sync.ts`](https://github.com/chkt/maybe/blob/2da1072bf9e0368eca28a08b983a0896243c4fe2/source/convert/sync.ts#L1)
+### Functions
+```ts
+function all<T extends unknown[]>(maybes:) : Maybe<T, ConversionFailure>;
+function any<T extends unknown[]>(maybes:) : Maybe<, ConversionFailure>;
 function blank<T, M extends Failure>(maybe:Maybe<T, M>) : Maybe<void, M>;
 function may<T, R>(fn:(v:T) => Maybe<R>, value:T) : Maybe<R>;
 ```
 ## flow
-[`./source/flow/index.ts`](https://github.com/chkt/maybe/blob/a1eafb4acee2d731eef6f996182de8a20a777c9f/source/flow/index.ts#L1)
+[`./source/flow/index.ts`](https://github.com/chkt/maybe/blob/2da1072bf9e0368eca28a08b983a0896243c4fe2/source/flow/index.ts#L1)
 ### References
 ```ts
 export {
@@ -73,7 +83,7 @@ export {
 } from "./sync"
 ```
 ## flow/async
-[`./source/flow/async.ts`](https://github.com/chkt/maybe/blob/a1eafb4acee2d731eef6f996182de8a20a777c9f/source/flow/async.ts#L1)
+[`./source/flow/async.ts`](https://github.com/chkt/maybe/blob/2da1072bf9e0368eca28a08b983a0896243c4fe2/source/flow/async.ts#L1)
 ### Functions
 ```ts
 function and<T, R, M extends Failure, F extends Failure>(fn:(value:T) => Promise<Maybe<R, F>>, maybe:Maybe<T, M>) : Promise<Maybe<R, M | F>>;
@@ -84,7 +94,7 @@ function or<T, R, M extends Failure, F extends Failure>(fn:(failure:M) => Promis
 function resultIf<T, R, M extends Failure>(shouldSucceed:(failure:M) => boolean, succeed:(failure:M) => Result<R>, maybe:Promise<Maybe<T, M>>) : Promise<Maybe<T | R, M>>;
 ```
 ## flow/sync
-[`./source/flow/sync.ts`](https://github.com/chkt/maybe/blob/a1eafb4acee2d731eef6f996182de8a20a777c9f/source/flow/sync.ts#L1)
+[`./source/flow/sync.ts`](https://github.com/chkt/maybe/blob/2da1072bf9e0368eca28a08b983a0896243c4fe2/source/flow/sync.ts#L1)
 ### Functions
 ```ts
 function and<T, R, M extends Failure, F extends Failure>(fn:(value:T) => Maybe<R, F>, maybe:Maybe<T, M>) : Maybe<R, M | F>;
@@ -95,7 +105,7 @@ function or<T, R, M extends Failure, F extends Failure>(fn:(value:M) => Maybe<R,
 function resultIf<T, R, M extends Failure>(shouldSucceed:(failure:M) => boolean, succeed:(failure:M) => Result<R>, maybe:Maybe<T, M>) : Maybe<T | R, M>;
 ```
 ## native
-[`./source/native/index.ts`](https://github.com/chkt/maybe/blob/a1eafb4acee2d731eef6f996182de8a20a777c9f/source/native/index.ts#L1)
+[`./source/native/index.ts`](https://github.com/chkt/maybe/blob/2da1072bf9e0368eca28a08b983a0896243c4fe2/source/native/index.ts#L1)
 ### References
 ```ts
 export { failureFrom as failureAsync, maybeFrom as maybeAsync, resultFrom as resultAsync } from "./async"
@@ -103,7 +113,7 @@ export { filterAll } from "./common"
 export { failureFrom, maybeFrom, resultFrom } from "./sync"
 ```
 ## native/async
-[`./source/native/async.ts`](https://github.com/chkt/maybe/blob/a1eafb4acee2d731eef6f996182de8a20a777c9f/source/native/async.ts#L1)
+[`./source/native/async.ts`](https://github.com/chkt/maybe/blob/2da1072bf9e0368eca28a08b983a0896243c4fe2/source/native/async.ts#L1)
 ### Functions
 ```ts
 function failureFrom<T, R>(fn:(v:T) => Promise<R>, value?:T) : Promise<Failure<R>>;
@@ -111,7 +121,7 @@ function maybeFrom<T, R, F extends Failure>(fn:(v:T) => Promise<R>, isResult:fil
 function resultFrom<T, R>(fn:(v:T) => Promise<R>, value?:T) : Promise<Maybe<R>>;
 ```
 ## native/common
-[`./source/native/common.ts`](https://github.com/chkt/maybe/blob/a1eafb4acee2d731eef6f996182de8a20a777c9f/source/native/common.ts#L1)
+[`./source/native/common.ts`](https://github.com/chkt/maybe/blob/2da1072bf9e0368eca28a08b983a0896243c4fe2/source/native/common.ts#L1)
 ### Type Aliases
 ```ts
 type filter<T> = (value:T) => boolean;
@@ -121,7 +131,7 @@ type filter<T> = (value:T) => boolean;
 function filterAll() : boolean;
 ```
 ## native/sync
-[`./source/native/sync.ts`](https://github.com/chkt/maybe/blob/a1eafb4acee2d731eef6f996182de8a20a777c9f/source/native/sync.ts#L1)
+[`./source/native/sync.ts`](https://github.com/chkt/maybe/blob/2da1072bf9e0368eca28a08b983a0896243c4fe2/source/native/sync.ts#L1)
 ### Functions
 ```ts
 function failureFrom<T, R>(fn:(v:T) => R, value?:T) : Failure<R>;

@@ -96,38 +96,27 @@ describe('all', () => {
 			createFailure('f3')
 		];
 
-		assert.deepStrictEqual(await all([
-			Promise.resolve(createResult(0, [ f[0] ])),
-			Promise.resolve(createResult(1, [ f[1] ])),
-			Promise.resolve(createResult(2, [ f[2] ])),
-			Promise.resolve(createResult(3, [ f[3] ])),
-		]), {
-			value : [ 0, 1, 2, 3 ],
-			messages : f
-		});
-		assert.deepStrictEqual(await all([
-			Promise.resolve(createFailure(0, messageSeverity.warn, [ f[0] ])),
-			Promise.resolve(createResult(1, [ f[1] ])),
-			Promise.resolve(createFailure(2, messageSeverity.warn, [ f[2] ])),
-			Promise.resolve(createResult(3, [ f[3] ])),
-		]), {
-			code : 0,
-			severity : messageSeverity.warn,
-			messages : [
-				{
-					code : 0,
-					severity : messageSeverity.warn,
-					messages : [ f[0] ]
-				},
-				f[1],
-				{
-					code : 2,
-					severity : messageSeverity.warn,
-					messages : [ f[2] ]
-				},
-				f[3]
-			]
-		});
+		assert.deepStrictEqual(
+			await all([
+				Promise.resolve(createResult(0, [ f[0] ])),
+				Promise.resolve(createResult(1, [ f[1] ])),
+				Promise.resolve(createResult(2, [ f[2] ])),
+				Promise.resolve(createResult(3, [ f[3] ])),
+			]),
+			createResult([ 0, 1, 2, 3 ], f)
+		);
+		assert.deepStrictEqual(
+			await all([
+				Promise.resolve(f[0]),
+				Promise.resolve(createResult(1, [ f[1] ])),
+				Promise.resolve(f[2]),
+				Promise.resolve(createResult(3, [ f[3] ])),
+			]),
+			createFailure({
+				id : 'some failures',
+				failures : [ f[0], f[2] ]
+			}, messageSeverity.error, f)
+		);
 	});
 
 	it('should handle promise rejections', async () => {
@@ -136,46 +125,40 @@ describe('all', () => {
 		const err2 = new Error('baz');
 		const err3 = new Error('qux');
 
-		assert.deepStrictEqual(await all([
-			Promise.resolve(createResult(0)),
-			Promise.resolve(createResult(1)),
-			Promise.resolve(createResult(2)),
-			Promise.reject(err3)
-		]), {
-			error : err3,
-			severity : messageSeverity.error,
-			messages : [{
-				error : err3,
-				severity : messageSeverity.error,
-				messages : []
-			}]
-		});
-		assert.deepStrictEqual(await all([
-			Promise.reject(err0),
-			Promise.reject(err1),
-			Promise.reject(err2),
-			Promise.reject(err3)
-		]), {
-			error : err0,
-			severity : messageSeverity.error,
-			messages : [{
-				error : err0,
-				severity : messageSeverity.error,
-				messages : []
-			}, {
-				error : err1,
-				severity : messageSeverity.error,
-				messages : []
-			}, {
-				error : err2,
-				severity : messageSeverity.error,
-				messages : []
-			}, {
-				error : err3,
-				severity : messageSeverity.error,
-				messages : []
-			}]
-		});
+		assert.deepStrictEqual(
+			await all([
+				Promise.resolve(createResult(0)),
+				Promise.resolve(createResult(1)),
+				Promise.resolve(createResult(2)),
+				Promise.reject(err3)
+			]),
+			createFailure({
+				id : 'some failures',
+				failures : [ createFailure(err3) ],
+			}, messageSeverity.error, [ createFailure(err3) ])
+		);
+		assert.deepStrictEqual(
+			await all([
+				Promise.reject(err0),
+				Promise.reject(err1),
+				Promise.reject(err2),
+				Promise.reject(err3)
+			]),
+			createFailure({
+				id : 'some failures',
+				failures : [
+					createFailure(err0),
+					createFailure(err1),
+					createFailure(err2),
+					createFailure(err3)
+				]
+			}, messageSeverity.error, [
+				createFailure(err0),
+				createFailure(err1),
+				createFailure(err2),
+				createFailure(err3)
+			])
+		);
 	});
 });
 
@@ -188,50 +171,33 @@ describe('any', () => {
 			createFailure('f3')
 		];
 
-		assert.deepStrictEqual(await any([
-			Promise.resolve(createResult(0, [ f[0] ])),
-			Promise.resolve(createResult(1, [ f[1] ])),
-			Promise.resolve(createResult(2, [ f[2] ])),
-			Promise.resolve(createResult(3, [ f[3] ]))
-		]), {
-			value : 0,
-			messages : [ f[0] ]
-		});
-		assert.deepStrictEqual(await any([
-			Promise.resolve(createFailure(0, messageSeverity.warn, [ f[0] ])),
-			Promise.resolve(createFailure(1, messageSeverity.warn, [ f[1] ])),
-			Promise.resolve(createFailure(2, messageSeverity.warn, [ f[2] ])),
-			Promise.resolve(createResult(3, [ f[3] ]))
-		]), {
-			value : 3,
-			messages : [ f[3] ]
-		});
-		assert.deepStrictEqual(await any([
-			Promise.resolve(createFailure(0, messageSeverity.warn, [ f[0] ])),
-			Promise.resolve(createFailure(1, messageSeverity.warn, [ f[1] ])),
-			Promise.resolve(createFailure(2, messageSeverity.warn, [ f[2] ])),
-			Promise.resolve(createFailure(3, messageSeverity.warn, [ f[3] ]))
-		]), {
-			text : 'no result',
-			severity : messageSeverity.error,
-			messages : [{
-				code : 0,
-				severity : messageSeverity.warn,
-				messages : [ f[0] ]
-			}, {
-				code : 1,
-				severity : messageSeverity.warn,
-				messages : [ f[1] ]
-			}, {
-				code : 2,
-				severity : messageSeverity.warn,
-				messages : [ f[2] ]
-			}, {
-				code : 3,
-				severity : messageSeverity.warn,
-				messages : [ f[3] ]
-			}]
-		});
+		assert.deepStrictEqual(
+			await any([
+				Promise.resolve(createResult(0, [ f[0] ])),
+				Promise.resolve(createResult(1, [ f[1] ])),
+				Promise.resolve(createResult(2, [ f[2] ])),
+				Promise.resolve(createResult(3, [ f[3] ]))
+			]),
+			createResult(0, f)
+		);
+		assert.deepStrictEqual(
+			await any([
+				Promise.resolve(f[0]),
+				Promise.resolve(f[1]),
+				Promise.resolve(f[2]),
+				Promise.resolve(createResult(3, [ f[3] ]))
+			]),
+			createResult(3, f)
+		);
+		assert.deepStrictEqual(
+			await any([
+				Promise.resolve(f[0]),
+				Promise.resolve(f[1]),
+				Promise.resolve(f[2]),
+				Promise.resolve(f[3])
+			]),
+			createFailure({ id : 'no result', failures : f }, messageSeverity.error, f)
+		);
 	});
 
 	it('should handle promise rejections', async () => {
@@ -240,29 +206,33 @@ describe('any', () => {
 		const err2 = new Error('baz');
 		const err3 = new Error('qux');
 
-		assert.deepStrictEqual(await any([
-			Promise.reject(err0),
-			Promise.resolve(createResult(1)),
-			Promise.resolve(createResult(2)),
-			Promise.resolve(createResult(3))
-		]), {
-			value : 1,
-			messages : []
-		});
-		assert.deepStrictEqual(await any([
-			Promise.reject(err0),
-			Promise.reject(err1),
-			Promise.reject(err2),
-			Promise.reject(err3),
-		]), {
-			text : 'no result',
-			severity : messageSeverity.error,
-			messages : [
+		assert.deepStrictEqual(
+			await any([
+				Promise.reject(err0),
+				Promise.resolve(createResult(1)),
+				Promise.resolve(createResult(2)),
+				Promise.resolve(createResult(3))
+			]),
+			createResult(1, [ createFailure(err0) ])
+		);
+		assert.deepStrictEqual(
+			await any([
+				Promise.reject(err0),
+				Promise.reject(err1),
+				Promise.reject(err2),
+				Promise.reject(err3),
+			]),
+			createFailure({ id : 'no result', failures : [
 				createFailure(err0),
 				createFailure(err1),
 				createFailure(err2),
-				createFailure(err3),
-			]
-		});
+				createFailure(err3)
+			] }, messageSeverity.error, [
+				createFailure(err0),
+				createFailure(err1),
+				createFailure(err2),
+				createFailure(err3)
+			])
+		);
 	});
 });
