@@ -20,7 +20,6 @@ export {
 	isDataMessage,
 	isErrorMessage,
 	isTextMessage,
-	messageSeverity,
 	resolveMessageValue
 } from './message.js';
 export {

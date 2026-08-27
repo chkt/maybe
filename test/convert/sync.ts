@@ -2,7 +2,7 @@ import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
 import { all, any, blank, may } from '../../source/convert/sync.js';
 import { createFailure, createResult } from '../../source/maybe.js';
-import { messageSeverity } from '../../source/message.js';
+import { MessageSeverity } from '../../source/message.js';
 
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
@@ -17,12 +17,12 @@ describe('may', () => {
 			createResult('foobar')
 		);
 		assert.deepStrictEqual(
-			may(() => createFailure('foo', messageSeverity.warn), undefined),
-			createFailure('foo', messageSeverity.warn)
+			may(() => createFailure('foo', MessageSeverity.warn), undefined),
+			createFailure('foo', MessageSeverity.warn)
 		);
 		assert.deepStrictEqual(
-			may(value => createFailure(`${ value }bar`, messageSeverity.warn), 'foo'),
-			createFailure('foobar', messageSeverity.warn)
+			may(value => createFailure(`${ value }bar`, MessageSeverity.warn), 'foo'),
+			createFailure('foobar', MessageSeverity.warn)
 		);
 		assert.deepStrictEqual(
 			may(() => { throw new Error('foo') }, undefined),
@@ -38,7 +38,7 @@ describe('may', () => {
 describe('all', () => {
 	it('should process an array of values', () => {
 		const f = [
-			createFailure('f0', messageSeverity.warn, [ createFailure('f00') ]),
+			createFailure('f0', MessageSeverity.warn, [ createFailure('f00') ]),
 			createFailure('f1'),
 			createFailure('f2'),
 			createFailure('f3')
@@ -63,7 +63,7 @@ describe('all', () => {
 			createFailure({
 				id : 'some failures',
 				failures : [ f[0], f[2] ]
-			}, messageSeverity.error, f)
+			}, MessageSeverity.error, f)
 		);
 	});
 });
@@ -71,7 +71,7 @@ describe('all', () => {
 describe('any', () => {
 	it('should process an array of values', () => {
 		const f = [
-			createFailure('f0', messageSeverity.warn, [ createFailure('f00') ]),
+			createFailure('f0', MessageSeverity.warn, [ createFailure('f00') ]),
 			createFailure('f1'),
 			createFailure('f2'),
 			createFailure('f3')
@@ -97,7 +97,7 @@ describe('any', () => {
 		);
 		assert.deepStrictEqual(
 			any(f),
-			createFailure({ id : 'no result', failures: f }, messageSeverity.error, f)
+			createFailure({ id : 'no result', failures: f }, MessageSeverity.error, f)
 		);
 	});
 });
@@ -106,7 +106,7 @@ describe('blank', () => {
 	it('should void the value of a Result', () => {
 		const f0 = createFailure('f0');
 		const f1 = createFailure('f1');
-		const f2 = createFailure('f2', messageSeverity.warn, [ f0, f1 ]);
+		const f2 = createFailure('f2', MessageSeverity.warn, [ f0, f1 ]);
 
 		assert.deepStrictEqual(blank(f2), f2);
 		assert.deepStrictEqual(

@@ -2,7 +2,7 @@ import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
 import { and, failureIf, onFailure, onResult, or, resultIf } from '../../source/flow/sync.js';
 import { Failure, Result, createFailure, createResult } from '../../source/maybe.js';
-import { messageSeverity, resolveMessageValue } from '../../source/message.js';
+import { MessageSeverity, resolveMessageValue } from '../../source/message.js';
 
 
 describe('and', () => {
@@ -20,7 +20,7 @@ describe('and', () => {
 		const failFn:(v:string) => Failure =
 			value => createFailure(
 				`${ value }baz`,
-				messageSeverity.fatal,
+				MessageSeverity.fatal,
 				[ f2, f3 ]
 			);
 
@@ -30,15 +30,15 @@ describe('and', () => {
 		);
 		assert.deepStrictEqual(
 			and(failFn, createResult('foo', [ f0, f1 ])),
-			createFailure('foobaz', messageSeverity.fatal, [ f0, f1, f2, f3 ])
+			createFailure('foobaz', MessageSeverity.fatal, [ f0, f1, f2, f3 ])
 		);
 		assert.deepStrictEqual(
-			and(resFn, createFailure('bang', messageSeverity.warn, [ f1, f0 ])),
-			createFailure('bang', messageSeverity.warn, [ f1, f0 ])
+			and(resFn, createFailure('bang', MessageSeverity.warn, [ f1, f0 ])),
+			createFailure('bang', MessageSeverity.warn, [ f1, f0 ])
 		);
 		assert.deepStrictEqual(
-			and(failFn, createFailure('bang', messageSeverity.warn, [ f1, f0 ])),
-			createFailure('bang', messageSeverity.warn, [ f1, f0 ])
+			and(failFn, createFailure('bang', MessageSeverity.warn, [ f1, f0 ])),
+			createFailure('bang', MessageSeverity.warn, [ f1, f0 ])
 		);
 	});
 });
@@ -49,7 +49,7 @@ describe('or', () => {
 		const f1 = createFailure('f1');
 		const f2 = createFailure('f2');
 		const f3 = createFailure('f3');
-		const f = createFailure('foo', messageSeverity.warn, [ f0, f1 ]);
+		const f = createFailure('foo', MessageSeverity.warn, [ f0, f1 ]);
 
 		const resFn:(v:Failure) => Result<string> =
 			value => createResult(
@@ -59,7 +59,7 @@ describe('or', () => {
 		const failFn:(v:Failure) => Failure =
 			value => createFailure(
 				`${ String(resolveMessageValue(value)) }baz`,
-				messageSeverity.fatal,
+				MessageSeverity.fatal,
 				[ f2, f3 ]
 			);
 
@@ -77,7 +77,7 @@ describe('or', () => {
 		);
 		assert.deepStrictEqual(
 			or(failFn, f),
-			createFailure('foobaz', messageSeverity.fatal, [ f, f2, f3 ])
+			createFailure('foobaz', MessageSeverity.fatal, [ f, f2, f3 ])
 		);
 	});
 });
@@ -86,7 +86,7 @@ describe('failureIf', () => {
 	it('should create a Failure from a Result', () => {
 		const f0 = createFailure('f0');
 		const f1 = createFailure('f1');
-		const f2 = createFailure('f2', messageSeverity.warn, [ f0, f1 ]);
+		const f2 = createFailure('f2', MessageSeverity.warn, [ f0, f1 ]);
 		const r1 = createResult('r1', [ f1, f0 ]);
 
 		const cond = (value:string) : boolean => value === 'r0';
@@ -95,7 +95,7 @@ describe('failureIf', () => {
 		assert.strictEqual(failureIf(cond, create, f2), f2);
 		assert.deepStrictEqual(failureIf(cond, create, createResult('r0', [ f1, f0 ])), {
 			text : 'f3-r0',
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [ f1, f0 ]
 		});
 		assert.strictEqual(failureIf(cond, create, r1), r1);
@@ -106,8 +106,8 @@ describe('resultIf', () => {
 	it('should create a Result from a Failure', () => {
 		const f0 = createFailure('f0');
 		const f1 = createFailure('f1');
-		const f2 = createFailure('f2', messageSeverity.warn, [ f0, f1 ]);
-		const f3 = createFailure('f3', messageSeverity.warn, [ f2 ]);
+		const f2 = createFailure('f2', MessageSeverity.warn, [ f0, f1 ]);
+		const f3 = createFailure('f3', MessageSeverity.warn, [ f2 ]);
 		const r1 = createResult('r1', [ f1, f0 ]);
 
 		const cond = (failure:Failure) : boolean => resolveMessageValue(failure) !== 'f2';
@@ -126,11 +126,11 @@ describe('onResult', () => {
 	it('should call a function for Results', () => {
 		const f0 = createFailure('f0');
 		const f1 = createFailure('f1');
-		const f2 = createFailure('f2', messageSeverity.warn, [ f1, f0 ]);
+		const f2 = createFailure('f2', MessageSeverity.warn, [ f1, f0 ]);
 		const r2 = createResult('r2', [ f0, f1 ]);
 		const f3 = createFailure('f3');
 		const f4 = createFailure('f4');
-		const f5 = createFailure('f5', messageSeverity.warn, [ f3, f4 ]);
+		const f5 = createFailure('f5', MessageSeverity.warn, [ f3, f4 ]);
 		const r5 = createResult('r5', [ f4, f3 ]);
 
 		assert.deepStrictEqual(onResult(() => r5, r2), {
@@ -143,12 +143,12 @@ describe('onResult', () => {
 		});
 		assert.deepStrictEqual(onResult(() => r5, f2), {
 			text : 'f2',
-			severity : messageSeverity.warn,
+			severity : MessageSeverity.warn,
 			messages : [ f1, f0 ]
 		});
 		assert.deepStrictEqual(onResult(() => f5, f2), {
 			text : 'f2',
-			severity : messageSeverity.warn,
+			severity : MessageSeverity.warn,
 			messages : [ f1, f0 ]
 		});
 	});
@@ -158,11 +158,11 @@ describe('onFailure', () => {
 	it('should call a function for Failures', () => {
 		const f0 = createFailure('f0');
 		const f1 = createFailure('f1');
-		const f2 = createFailure('f2', messageSeverity.warn, [ f1, f0 ]);
+		const f2 = createFailure('f2', MessageSeverity.warn, [ f1, f0 ]);
 		const r2 = createResult('r2', [ f0, f1 ]);
 		const f3 = createFailure('f3');
 		const f4 = createFailure('f4');
-		const f5 = createFailure('f5', messageSeverity.warn, [ f3, f4 ]);
+		const f5 = createFailure('f5', MessageSeverity.warn, [ f3, f4 ]);
 		const r5 = createResult('r5', [ f4, f3 ]);
 
 		assert.deepStrictEqual(onFailure(() => r5, r2), {
@@ -175,12 +175,12 @@ describe('onFailure', () => {
 		});
 		assert.deepStrictEqual(onFailure(() => r5, f2), {
 			text : 'f2',
-			severity : messageSeverity.warn,
+			severity : MessageSeverity.warn,
 			messages : [ f1, f0, f4, f3 ]
 		});
 		assert.deepStrictEqual(onFailure(() => f5, f2), {
 			text : 'f2',
-			severity : messageSeverity.warn,
+			severity : MessageSeverity.warn,
 			messages : [ f1, f0, f5 ]
 		});
 	});

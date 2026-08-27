@@ -33,7 +33,7 @@ describe('message api', () => {
 	});
 
 	it('should contain exposed enums', () => {
-		assert.strictEqual(root.messageSeverity.error, message.messageSeverity.error);
+		assert.strictEqual(root.MessageSeverity.error, message.MessageSeverity.error);
 	});
 
 	it('should contain exposed methods', () => {
@@ -55,10 +55,10 @@ describe('message api', () => {
 
 describe('result api', () => {
 	it('should contain exposed interfaces', () => {
-		const a:root.Failure<Error> = { error : new Error(), severity : message.messageSeverity.warn, messages : [] };
+		const a:root.Failure<Error> = { error : new Error(), severity : message.MessageSeverity.warn, messages : [] };
 		const b:root.Result<{ foo : 1 }> = { value : { foo : 1 }, messages : [] };
 		const c:root.Maybe<{ foo : 1 }> = { value : { foo : 1 }, messages : [] };
-		const d:root.Maybe<{ foo : 1 }> = { text : 'foo', severity : message.messageSeverity.warn, messages : [] };
+		const d:root.Maybe<{ foo : 1 }> = { text : 'foo', severity : message.MessageSeverity.warn, messages : [] };
 		const _e:maybe.Failure<Error> = a;
 		const _f:maybe.Result<{ foo : 1 }> = b;
 		const _g:maybe.Maybe<{ foo : 1 }> = c;

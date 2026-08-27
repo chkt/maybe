@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const enum messageSeverity {
+export const enum MessageSeverity {
 	fatal,
 	error,
 	warn,
@@ -8,8 +7,6 @@ export const enum messageSeverity {
 	verbose,
 	debug
 }
-
-export type MessageSeverity = messageSeverity;
 
 export interface MessageComposite {
 	readonly messages : Messages;
@@ -90,7 +87,7 @@ export function isDataMessage<T>(message:Message<T>) : message is DataMessage<Da
 
 export function createErrorMessage<T extends Error>(
 	error:T,
-	severity:MessageSeverity = messageSeverity.error,
+	severity:MessageSeverity = MessageSeverity.error,
 	messages:Messages = []
 ) : ErrorMessage<T> {
 	return { severity, error, messages };
@@ -98,7 +95,7 @@ export function createErrorMessage<T extends Error>(
 
 export function createCardinalMessage(
 	code:number,
-	severity:MessageSeverity = messageSeverity.error,
+	severity:MessageSeverity = MessageSeverity.error,
 	messages:Messages = []
 ) : CardinalMessage {
 	return { severity, code, messages };
@@ -106,7 +103,7 @@ export function createCardinalMessage(
 
 export function createTextMessage(
 	text:string,
-	severity:MessageSeverity = messageSeverity.error,
+	severity:MessageSeverity = MessageSeverity.error,
 	messages:Messages = []
 ) : TextMessage {
 	return { severity, text, messages };
@@ -114,7 +111,7 @@ export function createTextMessage(
 
 export function createDataMessage<T>(
 	data:T,
-	severity:MessageSeverity = messageSeverity.error,
+	severity:MessageSeverity = MessageSeverity.error,
 	messages:Messages = []
 ) : DataMessage<DataDistinct<T>> {
 	if (isDataRecord(data)) return { data, severity, messages } as DataMessage<DataDistinct<T>>;
@@ -123,7 +120,7 @@ export function createDataMessage<T>(
 
 export function createMessage<T>(
 	value:T,
-	severity:MessageSeverity = messageSeverity.error,
+	severity:MessageSeverity = MessageSeverity.error,
 	messages:Messages = []
 ) : MessageDistinct<T> {
 	switch (typeof value) {

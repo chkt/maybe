@@ -2,6 +2,7 @@ import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
 import {
 	Message,
+	MessageSeverity,
 	Messages,
 	containsMessage,
 	createCardinalMessage,
@@ -17,7 +18,6 @@ import {
 	isTextMessage,
 	mergeCompositeAb,
 	mergeCompositeBa,
-	messageSeverity,
 	resolveMessageValue
 } from '../source/message.js';
 
@@ -26,22 +26,22 @@ import {
 describe('isErrorMessage', () => {
 	it('should return true if message is an ErrorMessage', () => {
 		assert.strictEqual(isErrorMessage({
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [],
 			error : new Error('foo')
 		}), true);
 		assert.strictEqual(isErrorMessage({
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [],
 			code : 1
 		}), false);
 		assert.strictEqual(isErrorMessage({
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [],
 			text : 'foo'
 		}), false);
 		assert.strictEqual(isErrorMessage({
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [],
 			data : { foo : 1 }
 		}), false);
@@ -49,11 +49,11 @@ describe('isErrorMessage', () => {
 
 	it('should guard a ErrorMessage', () => {
 		const error = new Error();
-		const a:Message = { error, severity : messageSeverity.warn, messages : [] };
-		const b:Message = { code : 1, severity : messageSeverity.warn, messages : [] };
-		const c:Message = { text : 'foo', severity : messageSeverity.warn, messages : [] };
-		const d:Message = { data : { value : 1 }, severity : messageSeverity.warn, messages : [] };
-		const e:Message = { data : { foo : 1 }, severity : messageSeverity.warn, messages : [] };
+		const a:Message = { error, severity : MessageSeverity.warn, messages : [] };
+		const b:Message = { code : 1, severity : MessageSeverity.warn, messages : [] };
+		const c:Message = { text : 'foo', severity : MessageSeverity.warn, messages : [] };
+		const d:Message = { data : { value : 1 }, severity : MessageSeverity.warn, messages : [] };
+		const e:Message = { data : { foo : 1 }, severity : MessageSeverity.warn, messages : [] };
 
 		assert.strictEqual(isErrorMessage(a) ? a.error : false, error);
 		assert.strictEqual(isErrorMessage(b) ? b.error : false, false);
@@ -66,33 +66,33 @@ describe('isErrorMessage', () => {
 describe('isCardinalMessage', () => {
 	it('should return true if message is a CardinalMessage', () => {
 		assert.strictEqual(isCardinalMessage({
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [],
 			error : new Error('foo')
 		}), false);
 		assert.strictEqual(isCardinalMessage({
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [],
 			code : 1
 		}), true);
 		assert.strictEqual(isCardinalMessage({
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [],
 			text : 'foo'
 		}), false);
 		assert.strictEqual(isCardinalMessage({
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [],
 			data : { foo : 1 }
 		}), false);
 	});
 
 	it('should guard a CardinalMessage', () => {
-		const a:Message = { error : new Error(), severity : messageSeverity.warn, messages : [] };
-		const b:Message = { code : 1, severity : messageSeverity.warn, messages : [] };
-		const c:Message = { text : 'foo', severity : messageSeverity.warn, messages : [] };
-		const d:Message = { data : { value : 1 }, severity : messageSeverity.warn, messages : [] };
-		const e:Message = { data : { foo : 1 }, severity : messageSeverity.warn, messages : [] };
+		const a:Message = { error : new Error(), severity : MessageSeverity.warn, messages : [] };
+		const b:Message = { code : 1, severity : MessageSeverity.warn, messages : [] };
+		const c:Message = { text : 'foo', severity : MessageSeverity.warn, messages : [] };
+		const d:Message = { data : { value : 1 }, severity : MessageSeverity.warn, messages : [] };
+		const e:Message = { data : { foo : 1 }, severity : MessageSeverity.warn, messages : [] };
 
 		assert.strictEqual(isCardinalMessage(a) ? a.code : false, false);
 		assert.strictEqual(isCardinalMessage(b) ? b.code : false, 1);
@@ -105,33 +105,33 @@ describe('isCardinalMessage', () => {
 describe('isTextMessage', () => {
 	it('should return true if message is a TextMessage', () => {
 		assert.strictEqual(isTextMessage({
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [],
 			error : new Error('foo')
 		}), false);
 		assert.strictEqual(isTextMessage({
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [],
 			code : 1
 		}), false);
 		assert.strictEqual(isTextMessage({
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [],
 			text : 'foo'
 		}), true);
 		assert.strictEqual(isTextMessage({
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [],
 			data : { foo : 1 }
 		}), false);
 	});
 
 	it('should guard a TextMessage', () => {
-		const a:Message = { error : new Error(), severity : messageSeverity.warn, messages : [] };
-		const b:Message = { code : 1, severity : messageSeverity.warn, messages : [] };
-		const c:Message = { text : 'foo', severity : messageSeverity.warn, messages : [] };
-		const d:Message = { data : { value : 1 }, severity : messageSeverity.warn, messages : [] };
-		const e:Message = { data : { foo : 1 }, severity : messageSeverity.warn, messages : [] };
+		const a:Message = { error : new Error(), severity : MessageSeverity.warn, messages : [] };
+		const b:Message = { code : 1, severity : MessageSeverity.warn, messages : [] };
+		const c:Message = { text : 'foo', severity : MessageSeverity.warn, messages : [] };
+		const d:Message = { data : { value : 1 }, severity : MessageSeverity.warn, messages : [] };
+		const e:Message = { data : { foo : 1 }, severity : MessageSeverity.warn, messages : [] };
 
 		assert.strictEqual(isTextMessage(a) ? a.text : false, false);
 		assert.strictEqual(isTextMessage(b) ? b.text : false, false);
@@ -144,33 +144,33 @@ describe('isTextMessage', () => {
 describe('isDataMessage', () => {
 	it('should return true if message is a DataMessage', () => {
 		assert.strictEqual(isDataMessage({
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [],
 			error : new Error('foo')
 		}), false);
 		assert.strictEqual(isDataMessage({
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [],
 			code : 1
 		}), false);
 		assert.strictEqual(isDataMessage({
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [],
 			text : 'foo'
 		}), false);
 		assert.strictEqual(isDataMessage({
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : [],
 			data : { foo : 1 }
 		}), true);
 	});
 
 	it('should guard a DataMessage', () => {
-		const a:Message = { error : new Error(), severity : messageSeverity.warn, messages : [] };
-		const b:Message = { code : 1, severity : messageSeverity.warn, messages : [] };
-		const c:Message = { text : 'foo', severity : messageSeverity.warn, messages : [] };
-		const d:Message = { data : { value : 1 }, severity : messageSeverity.warn, messages : [] };
-		const e:Message = { data : { foo : 1 }, severity : messageSeverity.warn, messages : [] };
+		const a:Message = { error : new Error(), severity : MessageSeverity.warn, messages : [] };
+		const b:Message = { code : 1, severity : MessageSeverity.warn, messages : [] };
+		const c:Message = { text : 'foo', severity : MessageSeverity.warn, messages : [] };
+		const d:Message = { data : { value : 1 }, severity : MessageSeverity.warn, messages : [] };
+		const e:Message = { data : { foo : 1 }, severity : MessageSeverity.warn, messages : [] };
 
 		assert.strictEqual(isDataMessage(a) ? a.data : false, false);
 		assert.strictEqual(isDataMessage(b) ? b.data : false, false);
@@ -185,23 +185,23 @@ describe('createErrorMessage', () => {
 		const error = new Error('foo');
 		const children:Messages = [{
 			code : 1,
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		}];
 
 		assert.deepStrictEqual(createErrorMessage(error), {
 			error,
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
-		assert.deepStrictEqual(createErrorMessage(error, messageSeverity.warn), {
+		assert.deepStrictEqual(createErrorMessage(error, MessageSeverity.warn), {
 			error,
-			severity : messageSeverity.warn,
+			severity : MessageSeverity.warn,
 			messages : []
 		});
-		assert.deepStrictEqual(createErrorMessage(error, messageSeverity.warn, children), {
+		assert.deepStrictEqual(createErrorMessage(error, MessageSeverity.warn, children), {
 			error,
-			severity : messageSeverity.warn,
+			severity : MessageSeverity.warn,
 			messages : children
 		});
 	});
@@ -211,23 +211,23 @@ describe('createCardinalMessage', () => {
 	it('should create an CardinalFailure', () => {
 		const children:Messages = [{
 			code : 1,
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		}];
 
 		assert.deepStrictEqual(createCardinalMessage(2), {
 			code : 2,
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
-		assert.deepStrictEqual(createCardinalMessage(2, messageSeverity.warn), {
+		assert.deepStrictEqual(createCardinalMessage(2, MessageSeverity.warn), {
 			code : 2,
-			severity : messageSeverity.warn,
+			severity : MessageSeverity.warn,
 			messages : []
 		});
-		assert.deepStrictEqual(createCardinalMessage(2, messageSeverity.warn, children), {
+		assert.deepStrictEqual(createCardinalMessage(2, MessageSeverity.warn, children), {
 			code : 2,
-			severity : messageSeverity.warn,
+			severity : MessageSeverity.warn,
 			messages : children
 		});
 	});
@@ -237,23 +237,23 @@ describe('createTextMessage', () => {
 	it('should create a TextMessage', () => {
 		const children:Messages = [{
 			code : 1,
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		}];
 
 		assert.deepStrictEqual(createTextMessage('foo'), {
 			text : 'foo',
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
-		assert.deepStrictEqual(createTextMessage('foo', messageSeverity.warn), {
+		assert.deepStrictEqual(createTextMessage('foo', MessageSeverity.warn), {
 			text : 'foo',
-			severity : messageSeverity.warn,
+			severity : MessageSeverity.warn,
 			messages : []
 		});
-		assert.deepStrictEqual(createTextMessage('foo', messageSeverity.warn, children), {
+		assert.deepStrictEqual(createTextMessage('foo', MessageSeverity.warn, children), {
 			text : 'foo',
-			severity : messageSeverity.warn,
+			severity : MessageSeverity.warn,
 			messages : children
 		});
 	});
@@ -264,48 +264,48 @@ describe('createDataMessage', () => {
 		const error = new Error('foo');
 		const children:Messages = [{
 			code : 1,
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		}];
 
 		assert.deepStrictEqual(createDataMessage({ foo : 1 }), {
 			data : { foo : 1 },
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
-		assert.deepStrictEqual(createDataMessage({ foo : 1 }, messageSeverity.warn), {
+		assert.deepStrictEqual(createDataMessage({ foo : 1 }, MessageSeverity.warn), {
 			data : { foo : 1 },
-			severity : messageSeverity.warn,
+			severity : MessageSeverity.warn,
 			messages : []
 		});
-		assert.deepStrictEqual(createDataMessage({ foo : 1 }, messageSeverity.warn, children), {
+		assert.deepStrictEqual(createDataMessage({ foo : 1 }, MessageSeverity.warn, children), {
 			data : { foo : 1 },
-			severity : messageSeverity.warn,
+			severity : MessageSeverity.warn,
 			messages : children
 		});
 		assert.deepStrictEqual(createDataMessage(1), {
 			data : { value : 1 },
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
 		assert.deepStrictEqual(createDataMessage('foo'), {
 			data : { value : 'foo' },
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
 		assert.deepStrictEqual(createDataMessage(error), {
 			data : { value : error },
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
 		assert.deepStrictEqual(createDataMessage([ 'foo' ]), {
 			data : { value : [ 'foo' ] },
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
 		assert.deepStrictEqual(createDataMessage(null), {
 			data : { value : null },
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
 	});
@@ -317,42 +317,42 @@ describe('createMessage', () => {
 
 		assert.deepStrictEqual(createMessage(null), {
 			data : { value : null },
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
 		assert.deepStrictEqual(createMessage(true), {
 			data : { value : true },
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
 		assert.deepStrictEqual(createMessage(1), {
 			code : 1,
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
 		assert.deepStrictEqual(createMessage(1.1), {
 			data : { value : 1.1 },
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
 		assert.deepStrictEqual(createMessage('foo'), {
 			text : 'foo',
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
 		assert.deepStrictEqual(createMessage({ foo : 1 }), {
 			data : { foo : 1 },
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
 		assert.deepStrictEqual(createMessage([ 'foo' ]), {
 			data : { value : [ 'foo' ] },
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
 		assert.deepStrictEqual(createMessage(error), {
 			error,
-			severity : messageSeverity.error,
+			severity : MessageSeverity.error,
 			messages : []
 		});
 	});
@@ -375,31 +375,31 @@ describe('containsMessage', () => {
 		const m = createMessage('foo');
 		const m0 = createMessage('m0');
 		const m1 = createMessage('m1');
-		const m2 = createMessage('m2', messageSeverity.error, [ m ]);
-		const m3 = createMessage('m3', messageSeverity.error, [ m0, m1 ]);
+		const m2 = createMessage('m2', MessageSeverity.error, [ m ]);
+		const m3 = createMessage('m3', MessageSeverity.error, [ m0, m1 ]);
 
 		assert.strictEqual(
-			containsMessage(createMessage('bar', messageSeverity.error, [ m0, m1 ]), m),
+			containsMessage(createMessage('bar', MessageSeverity.error, [ m0, m1 ]), m),
 			false
 		);
 		assert.strictEqual(
-			containsMessage(createMessage('bar', messageSeverity.error, [ m0, m1, m ]), m),
+			containsMessage(createMessage('bar', MessageSeverity.error, [ m0, m1, m ]), m),
 			true
 		);
 		assert.strictEqual(
-			containsMessage(createMessage('bar', messageSeverity.error, [ m0, m1, m2 ]), m),
+			containsMessage(createMessage('bar', MessageSeverity.error, [ m0, m1, m2 ]), m),
 			true
 		);
 		assert.strictEqual(
-			containsMessage(createMessage('bar', messageSeverity.error, [ m0, m1, m3 ]), m),
+			containsMessage(createMessage('bar', MessageSeverity.error, [ m0, m1, m3 ]), m),
 			false
 		);
 	});
 
 	it('should detect reference loops', () => {
 		const children:Message[] = [];
-		const m0 = createTextMessage('foo', messageSeverity.error, children);
-		const m1 = createTextMessage('bar', messageSeverity.error, [ m0 ]);
+		const m0 = createTextMessage('foo', MessageSeverity.error, children);
+		const m1 = createTextMessage('bar', MessageSeverity.error, [ m0 ]);
 		const m2 = createTextMessage('baz');
 
 		children.push(m1);
@@ -412,11 +412,11 @@ describe('flattenMessages', () => {
 	it('should flatten a tree of messages', () => {
 		const m0 = createMessage('m0');
 		const m1 = createMessage('m1');
-		const m2 = createMessage('m2', messageSeverity.warn, [ m1, m0 ]);
+		const m2 = createMessage('m2', MessageSeverity.warn, [ m1, m0 ]);
 		const m3 = createMessage('m3');
-		const m4 = createMessage('m4', messageSeverity.warn, [ m3 ]);
+		const m4 = createMessage('m4', MessageSeverity.warn, [ m3 ]);
 		const m5 = createMessage('m5');
-		const m6 = createMessage('m6', messageSeverity.warn, [ m5, m4, m3, m2, m1, m0 ]);
+		const m6 = createMessage('m6', MessageSeverity.warn, [ m5, m4, m3, m2, m1, m0 ]);
 
 		assert.deepStrictEqual(
 			flattenMessages([ m6 ]),
@@ -426,8 +426,8 @@ describe('flattenMessages', () => {
 
 	it('should detect reference loops', () => {
 		const children:Message[] = [];
-		const m0 = createTextMessage('m0', messageSeverity.error, children);
-		const m1 = createTextMessage('m1', messageSeverity.error, [ m0 ]);
+		const m0 = createTextMessage('m0', MessageSeverity.error, children);
+		const m1 = createTextMessage('m1', MessageSeverity.error, [ m0 ]);
 
 		children.push(m1);
 
@@ -442,11 +442,11 @@ describe('flattenMessage', () => {
 	it('should flatten a message', () => {
 		const m0 = createMessage('m0');
 		const m1 = createMessage('m1');
-		const m2 = createMessage('m2', messageSeverity.warn, [ m1, m0 ]);
+		const m2 = createMessage('m2', MessageSeverity.warn, [ m1, m0 ]);
 		const m3 = createMessage('m3');
-		const m4 = createMessage('m4', messageSeverity.warn, [ m3 ]);
+		const m4 = createMessage('m4', MessageSeverity.warn, [ m3 ]);
 		const m5 = createMessage('m5');
-		const m6 = createMessage('m6', messageSeverity.warn, [ m5, m4, m3, m2, m1, m0 ]);
+		const m6 = createMessage('m6', MessageSeverity.warn, [ m5, m4, m3, m2, m1, m0 ]);
 
 		assert.deepStrictEqual(
 			flattenMessage(m6),
@@ -456,8 +456,8 @@ describe('flattenMessage', () => {
 
 	it('should detect reference loops', () => {
 		const children:Message[] = [];
-		const m0 = createTextMessage('m0', messageSeverity.error, children);
-		const m1 = createTextMessage('m1', messageSeverity.error, [ m0 ]);
+		const m0 = createTextMessage('m0', MessageSeverity.error, children);
+		const m1 = createTextMessage('m1', MessageSeverity.error, [ m0 ]);
 
 		children.push(m1);
 
@@ -472,10 +472,10 @@ describe('mergeCompositeAb', () => {
 	it('should merge the messages of composite a and b', () => {
 		const m0 = createMessage('m0');
 		const m1 = createMessage('m1');
-		const m2 = createMessage('m2', messageSeverity.warn, [ m0, m1 ]);
+		const m2 = createMessage('m2', MessageSeverity.warn, [ m0, m1 ]);
 		const m3 = createMessage('m3');
 		const m4 = createMessage('m4');
-		const m5 = createMessage('m5', messageSeverity.warn, [ m3, m4 ]);
+		const m5 = createMessage('m5', MessageSeverity.warn, [ m3, m4 ]);
 
 		assert.deepStrictEqual(mergeCompositeAb(
 			{ messages : [ m0, m1 ] },
@@ -503,10 +503,10 @@ describe('mergeCompositeBa', () => {
 	it('should merge the messages of composite b and a', () => {
 		const m0 = createMessage('m0');
 		const m1 = createMessage('m1');
-		const m2 = createMessage('m2', messageSeverity.warn, [ m0, m1 ]);
+		const m2 = createMessage('m2', MessageSeverity.warn, [ m0, m1 ]);
 		const m3 = createMessage('m3');
 		const m4 = createMessage('m4');
-		const m5 = createMessage('m5', messageSeverity.warn, [ m3, m4 ]);
+		const m5 = createMessage('m5', MessageSeverity.warn, [ m3, m4 ]);
 
 		assert.deepStrictEqual(mergeCompositeBa(
 			{ messages : [ m0, m1 ] },

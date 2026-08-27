@@ -1,4 +1,4 @@
-import { DataMessage, Messages, messageSeverity } from '../message.js';
+import { DataMessage, MessageSeverity, Messages } from '../message.js';
 
 
 interface ConversionFailureData {
@@ -12,7 +12,7 @@ export type ConversionFailure = DataMessage<ConversionFailureData>;
 export function createConversionFailure(id:string, failures:Messages, messages:Messages) : ConversionFailure {
 	return {
 		data : { id, failures },
-		severity : messageSeverity.error,
+		severity : MessageSeverity.error,
 		messages
 	};
 }

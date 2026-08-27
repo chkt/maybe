@@ -2,7 +2,7 @@ import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
 import { all, any, may, resolve } from '../../source/convert/async.js';
 import { createFailure, createResult } from '../../source/maybe.js';
-import { messageSeverity } from '../../source/message.js';
+import { MessageSeverity } from '../../source/message.js';
 
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
@@ -24,17 +24,17 @@ describe('may', () => {
 		);
 		assert.deepStrictEqual(
 			await may(
-				async () => Promise.resolve(createFailure('foo', messageSeverity.warn)),
+				async () => Promise.resolve(createFailure('foo', MessageSeverity.warn)),
 				undefined
 			),
-			createFailure('foo', messageSeverity.warn)
+			createFailure('foo', MessageSeverity.warn)
 		);
 		assert.deepStrictEqual(
 			await may(
-				async value => Promise.resolve(createFailure(`${ value }bar`, messageSeverity.warn)),
+				async value => Promise.resolve(createFailure(`${ value }bar`, MessageSeverity.warn)),
 				'foo'
 			),
-			createFailure('foobar', messageSeverity.warn)
+			createFailure('foobar', MessageSeverity.warn)
 		);
 		assert.deepStrictEqual(
 			await may(
@@ -78,11 +78,11 @@ describe('resolve', () => {
 		);
 		assert.deepStrictEqual(
 			await resolve(() => createResult(Promise.reject(new Error('foo')), [ f0, f1 ]), undefined),
-			createFailure(new Error('foo'), messageSeverity.error, [ f0, f1 ])
+			createFailure(new Error('foo'), MessageSeverity.error, [ f0, f1 ])
 		);
 		assert.deepStrictEqual(
-			await resolve(() => createFailure('foo', messageSeverity.warn, [ f0, f1 ]), undefined),
-			createFailure('foo', messageSeverity.warn, [ f0, f1 ])
+			await resolve(() => createFailure('foo', MessageSeverity.warn, [ f0, f1 ]), undefined),
+			createFailure('foo', MessageSeverity.warn, [ f0, f1 ])
 		);
 	});
 });
@@ -90,7 +90,7 @@ describe('resolve', () => {
 describe('all', () => {
 	it('should process an array of promises', async () => {
 		const f = [
-			createFailure('f0', messageSeverity.warn, [ createFailure('f00') ]),
+			createFailure('f0', MessageSeverity.warn, [ createFailure('f00') ]),
 			createFailure('f1'),
 			createFailure('f2'),
 			createFailure('f3')
@@ -115,7 +115,7 @@ describe('all', () => {
 			createFailure({
 				id : 'some failures',
 				failures : [ f[0], f[2] ]
-			}, messageSeverity.error, f)
+			}, MessageSeverity.error, f)
 		);
 	});
 
@@ -135,7 +135,7 @@ describe('all', () => {
 			createFailure({
 				id : 'some failures',
 				failures : [ createFailure(err3) ],
-			}, messageSeverity.error, [ createFailure(err3) ])
+			}, MessageSeverity.error, [ createFailure(err3) ])
 		);
 		assert.deepStrictEqual(
 			await all([
@@ -152,7 +152,7 @@ describe('all', () => {
 					createFailure(err2),
 					createFailure(err3)
 				]
-			}, messageSeverity.error, [
+			}, MessageSeverity.error, [
 				createFailure(err0),
 				createFailure(err1),
 				createFailure(err2),
@@ -165,7 +165,7 @@ describe('all', () => {
 describe('any', () => {
 	it('should process an array of promises', async () => {
 		const f = [
-			createFailure('f0', messageSeverity.warn, [ createFailure('f00') ]),
+			createFailure('f0', MessageSeverity.warn, [ createFailure('f00') ]),
 			createFailure('f1'),
 			createFailure('f2'),
 			createFailure('f3')
@@ -196,7 +196,7 @@ describe('any', () => {
 				Promise.resolve(f[2]),
 				Promise.resolve(f[3])
 			]),
-			createFailure({ id : 'no result', failures : f }, messageSeverity.error, f)
+			createFailure({ id : 'no result', failures : f }, MessageSeverity.error, f)
 		);
 	});
 
@@ -227,7 +227,7 @@ describe('any', () => {
 				createFailure(err1),
 				createFailure(err2),
 				createFailure(err3)
-			] }, messageSeverity.error, [
+			] }, MessageSeverity.error, [
 				createFailure(err0),
 				createFailure(err1),
 				createFailure(err2),
