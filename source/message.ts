@@ -173,14 +173,14 @@ export function flattenMessage(message:Message) : Messages {
 	return [ ...flatten([ message ], message.messages), message ];
 }
 
-export function mergeCompositeAb<T extends MessageComposite, U extends MessageComposite>(a:T, b:U) : T {
+export function mergeCompositeAb<T extends MessageComposite>(a:T, b:MessageComposite) : T {
 	return {
 		...a,
 		messages : [ ...a.messages, ...b.messages ]
 	};
 }
 
-export function mergeCompositeBa<T extends MessageComposite, U extends MessageComposite>(a:T, b:U) : T {
+export function mergeCompositeBa<T extends MessageComposite>(a:T, b:MessageComposite) : T {
 	return {
 		...a,
 		messages : [ ...b.messages, ...a.messages ]

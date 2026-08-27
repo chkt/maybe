@@ -2,6 +2,7 @@ import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
 import {
 	Message,
+	MessageComposite,
 	MessageSeverity,
 	Messages,
 	containsMessage,
@@ -491,7 +492,7 @@ describe('mergeCompositeAb', () => {
 		});
 		assert.deepStrictEqual(mergeCompositeAb(
 			{ foo : 'bar', messages : [ m0 ] },
-			{ foo : 'baz', messages : [ m1 ] }
+			{ foo : 'baz', messages : [ m1 ] } as MessageComposite
 		), {
 			foo : 'bar',
 			messages : [ m0, m1 ]
@@ -522,7 +523,7 @@ describe('mergeCompositeBa', () => {
 		});
 		assert.deepStrictEqual(mergeCompositeBa(
 			{ foo : 'bar', messages : [ m0 ] },
-			{ foo : 'baz', messages : [ m1 ] }
+			{ foo : 'baz', messages : [ m1 ] } as MessageComposite
 		), {
 			foo : 'bar',
 			messages : [ m1, m0 ]
