@@ -1,6 +1,6 @@
 import * as assert from 'node:assert';
 import { describe, it } from 'mocha';
-import { createFailure, createResult, isFailure, isResult, mergeMessagesAb, mergeMessagesBa } from '../source/maybe.js';
+import { createFailure, createResult, isFailure, isResult } from '../source/maybe.js';
 import { MessageSeverity, createMessage } from '../source/message.js';
 
 
@@ -64,69 +64,5 @@ describe('createResult', () => {
 describe('createFailure', () => {
 	it('should alias createMessage', () => {
 		assert.strictEqual(createFailure, createMessage);
-	});
-});
-
-describe('mergeMessagesAb', () => {
-	it('should merge the messages of Maybe A and B', () => {
-		const f0 = createFailure('f0');
-		const f1 = createFailure('f1');
-		const f2 = createFailure('f2', MessageSeverity.warn, [ f1, f0 ]);
-		const r2 = createResult('r2', [ f1, f0 ]);
-		const f3 = createFailure('f3');
-		const f4 = createFailure('f4');
-		const f5 = createFailure('f5', MessageSeverity.warn, [ f3, f4 ]);
-		const r5 = createResult('r5', [ f3, f4 ]);
-
-		assert.deepStrictEqual(mergeMessagesAb(f2, f5), {
-			text : 'f2',
-			severity : MessageSeverity.warn,
-			messages : [ f1, f0, f5 ]
-		});
-		assert.deepStrictEqual(mergeMessagesAb(r2, f5), {
-			value : 'r2',
-			messages : [ f1, f0, f5 ]
-		});
-		assert.deepStrictEqual(mergeMessagesAb(f2, r5), {
-			text : 'f2',
-			severity : MessageSeverity.warn,
-			messages : [ f1, f0, f3, f4 ]
-		});
-		assert.deepStrictEqual(mergeMessagesAb(r2, r5), {
-			value : 'r2',
-			messages : [ f1, f0, f3, f4 ]
-		});
-	});
-});
-
-describe('mergeMessagesBa', () => {
-	it('should merge the messages of Maybe B and A', () => {
-		const f0 = createFailure('f0');
-		const f1 = createFailure('f1');
-		const f2 = createFailure('f2', MessageSeverity.warn, [ f1, f0 ]);
-		const r2 = createResult('r2', [ f1, f0 ]);
-		const f3 = createFailure('f3');
-		const f4 = createFailure('f4');
-		const f5 = createFailure('f5', MessageSeverity.warn, [ f3, f4 ]);
-		const r5 = createResult('r5', [ f3, f4 ]);
-
-		assert.deepStrictEqual(mergeMessagesBa(f2, f5), {
-			text : 'f2',
-			severity : MessageSeverity.warn,
-			messages : [ f5, f1, f0 ]
-		});
-		assert.deepStrictEqual(mergeMessagesBa(r2, f5), {
-			value : 'r2',
-			messages : [ f5, f1, f0 ]
-		});
-		assert.deepStrictEqual(mergeMessagesBa(f2, r5), {
-			text : 'f2',
-			severity : MessageSeverity.warn,
-			messages : [ f3, f4, f1, f0 ]
-		});
-		assert.deepStrictEqual(mergeMessagesBa(r2, r5), {
-			value : 'r2',
-			messages : [ f3, f4, f1, f0 ]
-		});
 	});
 });

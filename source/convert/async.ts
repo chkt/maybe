@@ -4,11 +4,9 @@ import {
 	Result,
 	createFailure,
 	createResult,
-	isResult,
-	mergeMessagesAb,
-	mergeMessagesBa
+	isResult
 } from '../maybe.js';
-import { MessageComposite, Messages } from '../message.js';
+import { MessageComposite, Messages, mergeMessagesAb, mergeMessagesBa } from '../message.js';
 import { ConversionFailure, createConversionFailure } from './common.js';
 
 

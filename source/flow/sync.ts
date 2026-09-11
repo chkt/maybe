@@ -3,10 +3,9 @@ import {
 	Maybe,
 	Result,
 	isFailure,
-	isResult,
-	mergeMessagesAb,
-	mergeMessagesBa
+	isResult
 } from '../maybe.js';
+import { mergeMessagesAb, mergeMessagesBa } from '../message.js';
 
 
 export function and<T, R, M extends Failure, F extends Failure>(

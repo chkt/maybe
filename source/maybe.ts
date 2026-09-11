@@ -30,15 +30,3 @@ export function createResult<T>(value:T, messages:Messages = []) : Result<T> {
  * @alias of createMessage
  */
 export const createFailure = createMessage;
-
-export function mergeMessagesAb<T extends MessageComposite, F extends Failure>(a:T, b:Maybe<unknown, F>) : T {
-	const messages = isResult(b) ? b.messages : [ b ];
-
-	return { ...a, messages : [ ...a.messages, ...messages ] };
-}
-
-export function mergeMessagesBa<T extends MessageComposite, F extends Failure>(a:T, b:Maybe<unknown, F>) : T {
-	const messages = isResult(b) ? b.messages : [ b ];
-
-	return { ...a, messages : [ ...messages, ...a.messages ] };
-}

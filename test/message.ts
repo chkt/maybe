@@ -5,6 +5,7 @@ import {
 	MessageComposite,
 	MessageSeverity,
 	Messages,
+	NullMessage,
 	containsMessage,
 	createCardinalMessage,
 	createDataMessage,
@@ -16,14 +17,30 @@ import {
 	isCardinalMessage,
 	isDataMessage,
 	isErrorMessage,
+	isMessage,
+	isNullValue,
 	isTextMessage,
 	mergeCompositeAb,
 	mergeCompositeBa,
+	mergeMessagesAb,
+	mergeMessagesBa,
 	resolveMessageValue
 } from '../source/message.js';
 
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
+
+describe('isMessage', () => {
+	it('should return true if a MessageComposite is also a Message', () => {
+		assert.strictEqual(isMessage({ messages : [] }), false);
+		assert.strictEqual(isMessage({ messages : [], severity : MessageSeverity.error } as NullMessage), true);
+		assert.strictEqual(isMessage(createCardinalMessage(1)), true);
+		assert.strictEqual(isMessage(createTextMessage('foo')), true);
+		assert.strictEqual(isMessage(createErrorMessage(new Error('foo'))), true);
+		assert.strictEqual(isMessage(createDataMessage({ foo : 1 })), true);
+	});
+});
+
 describe('isErrorMessage', () => {
 	it('should return true if message is an ErrorMessage', () => {
 		assert.strictEqual(isErrorMessage({
@@ -369,6 +386,10 @@ describe('resolveMessageValue', () => {
 		assert.strictEqual(resolveMessageValue(createTextMessage('foo')), 'foo');
 		assert.strictEqual(resolveMessageValue(createDataMessage(data)), data);
 	});
+
+	it('should return NULL_VALUE for NullMessages', () => {
+		assert.strictEqual(isNullValue(resolveMessageValue({ severity : MessageSeverity.error, messages : [] })), true);
+	});
 });
 
 describe('containsMessage', () => {
@@ -528,5 +549,77 @@ describe('mergeCompositeBa', () => {
 			foo : 'bar',
 			messages : [ m1, m0 ]
 		});
+	});
+});
+
+describe('mergeMessagesAb', () => {
+	it('should merge the messages of MessageComposite A and B', () => {
+		const f0 = createMessage('f0');
+		const f1 = createMessage('f1');
+		const f2 = createMessage('f2', MessageSeverity.warn, [ f1, f0 ]);
+		const r2 = { messages : [ f1, f0 ] };
+		const f3 = createMessage('f3');
+		const f4 = createMessage('f4');
+		const f5 = createMessage('f5', MessageSeverity.warn, [ f3, f4 ]);
+		const r5 = { messages : [ f3, f4 ] };
+
+		assert.deepStrictEqual(mergeMessagesAb(f2, f5), {
+			text : 'f2',
+			severity : MessageSeverity.warn,
+			messages : [ f1, f0, f5 ]
+		});
+		assert.deepStrictEqual(mergeMessagesAb(r2, f5), {
+			messages : [ f1, f0, f5 ]
+		});
+		assert.deepStrictEqual(mergeMessagesAb(f2, r5), {
+			text : 'f2',
+			severity : MessageSeverity.warn,
+			messages : [ f1, f0, f3, f4 ]
+		});
+		assert.deepStrictEqual(mergeMessagesAb(r2, r5), {
+			messages : [ f1, f0, f3, f4 ]
+		});
+	});
+
+	it('should return A if A and B are identical', () => {
+		const f0 = createMessage('f0');
+
+		assert.deepStrictEqual(mergeMessagesAb(f0, f0), f0);
+	});
+});
+
+describe('mergeMessagesBa', () => {
+	it('should merge the messages of Maybe B and A', () => {
+		const f0 = createMessage('f0');
+		const f1 = createMessage('f1');
+		const f2 = createMessage('f2', MessageSeverity.warn, [ f1, f0 ]);
+		const r2 = { messages : [ f1, f0 ] };
+		const f3 = createMessage('f3');
+		const f4 = createMessage('f4');
+		const f5 = createMessage('f5', MessageSeverity.warn, [ f3, f4 ]);
+		const r5 = { messages : [ f3, f4 ] };
+
+		assert.deepStrictEqual(mergeMessagesBa(f2, f5), {
+			text : 'f2',
+			severity : MessageSeverity.warn,
+			messages : [ f5, f1, f0 ]
+		});
+		assert.deepStrictEqual(mergeMessagesBa(r2, f5), {
+			messages : [ f5, f1, f0 ]
+		});
+		assert.deepStrictEqual(mergeMessagesBa(f2, r5), {
+			text : 'f2',
+			severity : MessageSeverity.warn,
+			messages : [ f3, f4, f1, f0 ]
+		});
+		assert.deepStrictEqual(mergeMessagesBa(r2, r5), {
+			messages : [ f3, f4, f1, f0 ]
+		});
+	});
+
+	it('should return A if A and B are identical', () => {
+		const f0 = createMessage('f0');
+
+		assert.deepStrictEqual(mergeMessagesBa(f0, f0), f0);
 	});
 });

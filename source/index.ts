@@ -1,8 +1,6 @@
 export {
 	CardinalMessage,
 	DataMessage,
-	DataRecord,
-	DataValue,
 	ErrorMessage,
 	Message,
 	MessageSeverity,
@@ -19,7 +17,13 @@ export {
 	isCardinalMessage,
 	isDataMessage,
 	isErrorMessage,
+	isMessage,
+	isNullValue,
 	isTextMessage,
+	mergeCompositeAb,
+	mergeCompositeBa,
+	mergeMessagesAb,
+	mergeMessagesBa,
 	resolveMessageValue
 } from './message.js';
 export {

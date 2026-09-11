@@ -13,7 +13,7 @@ import * as native from '../source/native/index.js';
 describe('message api', () => {
 	it('should contain exposed interfaces', () => {
 		const a:root.MessageSeverity = 0;
-		const b:root.ErrorMessage = { severity : 0, error : new Error(), messages : [] };
+		const b:root.ErrorMessage<Error> = { severity : 0, error : new Error(), messages : [] };
 		const c:root.CardinalMessage = { severity : 0, code : 1, messages : [] };
 		const d:root.TextMessage = { severity : 0, text : 'foo', messages : [] };
 		const e:root.DataMessage<{ foo : number }> = { severity : 0, data : { foo : 1 }, messages : [] };
@@ -24,7 +24,7 @@ describe('message api', () => {
 		_f = e;
 
 		const _g:message.MessageSeverity = a;
-		const _h:message.ErrorMessage = b;
+		const _h:message.ErrorMessage<Error> = b;
 		const _i:message.CardinalMessage = c;
 		const _j:message.TextMessage = d;
 		const _k:message.DataMessage<{ foo : number }> = e;
@@ -37,6 +37,8 @@ describe('message api', () => {
 	});
 
 	it('should contain exposed methods', () => {
+		assert.strictEqual(root.isNullValue, message.isNullValue);
+		assert.strictEqual(root.isMessage, message.isMessage);
 		assert.strictEqual(root.isErrorMessage, message.isErrorMessage);
 		assert.strictEqual(root.isCardinalMessage, message.isCardinalMessage);
 		assert.strictEqual(root.isTextMessage, message.isTextMessage);
@@ -50,6 +52,10 @@ describe('message api', () => {
 		assert.strictEqual(root.containsMessage, message.containsMessage);
 		assert.strictEqual(root.flattenMessage, message.flattenMessage);
 		assert.strictEqual(root.flattenMessages, message.flattenMessages);
+		assert.strictEqual(root.mergeCompositeAb, message.mergeCompositeAb);
+		assert.strictEqual(root.mergeCompositeBa, message.mergeCompositeBa);
+		assert.strictEqual(root.mergeMessagesAb, message.mergeMessagesAb);
+		assert.strictEqual(root.mergeMessagesBa, message.mergeMessagesBa);
 	});
 });
 
