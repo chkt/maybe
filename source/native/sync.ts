@@ -6,7 +6,7 @@ export function maybeFrom<T, R>(fn:(v:T) => R, isResult:filter<R> = filterAll, v
 	const res = fn(value as T);
 
 	if (isResult(res)) return createResult(res);
-	else return createFailure(res) as Failure<R>;
+	else return createFailure(res);
 }
 
 export function resultFrom<T, R>(fn:(v:T) => R, value?:T) : Result<R> {
@@ -14,5 +14,5 @@ export function resultFrom<T, R>(fn:(v:T) => R, value?:T) : Result<R> {
 }
 
 export function failureFrom<T, R>(fn:(v:T) => R, value?:T) : Failure<R> {
-	return createFailure(fn(value as T)) as Failure<R>;
+	return createFailure(fn(value as T));
 }

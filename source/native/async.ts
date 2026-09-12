@@ -11,10 +11,10 @@ export async function maybeFrom<T, R, F extends Failure>(
 		const res = await fn(value as T);
 
 		if (isResult(res)) return createResult(res);
-		else return createFailure(res) as Failure<R>;
+		else return createFailure(res);
 	}
 	catch (err) {
-		return createFailure(err) as F;
+		return createFailure(err);
 	}
 }
 
@@ -35,9 +35,9 @@ export async function failureFrom<T, R>(
 	value?:T
 ) : Promise<Failure<R>> {
 	try {
-		return createFailure(await fn(value as T)) as Failure<R>;
+		return createFailure(await fn(value as T));
 	}
 	catch (err) {
-		return createFailure(err) as Failure<R>;
+		return createFailure(err);
 	}
 }
