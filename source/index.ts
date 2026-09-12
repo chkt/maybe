@@ -50,6 +50,7 @@ export {
 	any,
 	anyAsync,
 	blank,
+	isConversionFailure,
 	may,
 	mayAsync,
 	resolve

@@ -93,6 +93,7 @@ describe('native api', () => {
 
 describe('conversion api', () => {
 	it('should contain exposed methods', () => {
+		assert.strictEqual(root.isConversionFailure, convert.isConversionFailure);
 		assert.strictEqual(root.all, convert.all);
 		assert.strictEqual(root.allAsync, convert.allAsync);
 		assert.strictEqual(root.any, convert.any);
